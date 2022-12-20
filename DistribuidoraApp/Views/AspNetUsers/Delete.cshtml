@@ -1,0 +1,76 @@
+﻿@model Negocio.entidades.AspNetUsers
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <h2>¿Está seguro que desea eliminar el usuario?</h2>
+    </div>
+    <div class="col-md-4">
+        <div>
+            @Html.ActionLink("Volver al listado", "Index", null, new { @class = "btn btn-warning pull-right" })
+        </div>
+    </div>
+</div>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Apellido)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Apellido)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Dni)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Dni)
+        </dd>
+
+        <dt>
+            Perfil
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Perfil.Nombre)
+        </dd>
+
+        <dt>
+            Sucursal
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Sucursal.Nombre)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-danger" /> 
+           
+        </div>
+    }
+</div>

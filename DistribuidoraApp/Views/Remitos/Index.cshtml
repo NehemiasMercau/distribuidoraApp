@@ -1,0 +1,361 @@
+﻿@model IEnumerable<Negocio.entidades.Remito>
+@using Microsoft.AspNet.Identity;
+@using DistribuidoraAPI.Extensions;
+@{
+    ViewBag.Title = "Listado de Remitos";
+}
+
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+<link href="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.css" rel="stylesheet">
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment-with-locales.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6"><h2>Listado de Remitos</h2></div>
+                    <div class="col-md-6">
+                        @Html.ActionLink("Volver al Inicio", "Index", "Home", null, new { @class = "btn btn-outline btn-warning pull-right" })
+
+                        @*@Html.ActionLink("Crear Nuevo Remito", "Create", null, new { @class = "btn btn-outline btn-success pull-right" })*@
+                        @Html.ActionLink("Volver a Ventas", "Index", "Ventas", null, new { @class = "btn btn-outline btn-warning pull-right", @id = "btnVentas", @hidden = "hidden" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    @using (Ajax.BeginForm("IndexBusqueda", "Remitos", null, new AjaxOptions
+                    {
+                        HttpMethod = "POST",
+                        OnBegin = "onBeginSubmit",
+                        OnComplete = "onCompleteSubmit",
+                        OnFailure = "onFailureResult",
+                        OnSuccess = "onSuccessResult",
+                        UpdateTargetId = "divTable",
+                        InsertionMode = InsertionMode.Replace
+                    }, new { id = "AjaxForm" }))
+                    {
+                        <div class="card-header">Filtros</div>
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Rango de Fechas</label>
+                                        <div id="reportrange"
+                                             style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+                                            <i class="fa fa-calendar"></i>&nbsp;
+                                            <span></span> <i class="fa fa-caret-down"></i>
+                                            <input type="hidden" id="txtFechas" name="fechas" value="" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.Label("Transportista", "Transportista", htmlAttributes: new { @class = "control-label col-md-12" })
+                                        <div class="col-md-12">
+                                            @Html.DropDownList("TransportistaId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        @Html.Label("Cliente", "Cliente", htmlAttributes: new { @class = "control-label col-md-12" })
+                                        <div class="col-md-12">
+                                            @Html.DropDownList("ClienteId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control select2" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    @Html.Label("Venta", htmlAttributes: new { @class = "control-label col-md-12" })
+                                    <div class="col-md-10">
+                                        @Html.DropDownList("VentaId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer  d-flex justify-content-center">
+                            <input type="submit" id="btnBuscar" class="btn btn-outline-warning" value="Buscar" />
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="table-responsive" id="divTable">
+            @Html.Partial("_Index", Model)
+        </div>
+    </div>
+</div>
+
+@section scripts{
+
+    <script type="text/javascript">
+
+        //$(document).ready(function () {
+
+        //    //crearTabla(true);
+
+        //    //$('#cboCantidad').change(function () {
+        //    //    var value = $(this).val();
+        //    //    crearTabla(value);
+
+        //    //});
+
+
+        //});
+
+        @*var mensaje = '@ViewBag.mensaje';
+        var tipoMensaje = '@ViewBag.tipoMensaje';
+
+
+
+        if (tipoMensaje != '') {
+            Swal.fire({
+                position: 'top-end',
+                icon: tipoMensaje,
+                title: mensaje,
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }*@
+
+        function crearTabla(cant) {
+            $("#divTable").hide();
+
+            $("#preloader").fadeIn(5);
+
+
+            var url = '@(Url.Action("GetRemitosFiltro", "Remitos", null, Request.Url.Scheme))';
+                console.log(url);
+                $("#divTable").load(url, function (response, status, xhr) {
+                    console.log("aca se creo la tabla");
+                    $("#divTable").show();
+                    $("#preloader").fadeOut("slow");
+                    if (status == "error") {
+                        switch (xhr.status) {
+                            case 408:
+                                console.log(xhr.statusText, "Advertencia.");
+                        }
+                        return;
+                    } else {
+                        reloadDatatable();
+                    }
+                });
+        }
+
+        function onBeginSubmit() {
+            $("#preloader").fadeIn(5);
+        }
+        function onCompleteSubmit() {
+            $("#preloader").fadeOut("slow");
+            reloadDatatable();
+        }
+        function onFailureResult() { }
+        function onSuccessResult() { }
+
+
+        $(function () {
+
+            moment.locale('es');
+            var start = moment().subtract(1, 'days');
+            var end = moment();
+
+            function cb(start, end) {
+                $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                $('#txtFechas').val(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+            }
+
+
+            $('#reportrange').daterangepicker({
+                startDate: start,
+                endDate: end,
+
+                ranges: {
+                    'Hoy': [moment(), moment()],
+                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Últimos 7 Días': [moment().subtract(6, 'days'), moment()],
+                    'Últimos 30 Días': [moment().subtract(29, 'days'), moment()],
+                    'Este Mes': [moment().startOf('month'), moment().endOf('month')],
+                    'Último Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+                "locale": {
+                    "format": "DD/MM/YYYY",
+                    "separator": " - ",
+                    "applyLabel": "Aplicar",
+                    "cancelLabel": "Cancelar",
+                    "fromLabel": "De",
+                    "toLabel": "Até",
+                    "customRangeLabel": "Personalizado",
+                    "daysOfWeek": [
+                        "Dom",
+                        "Lun",
+                        "Mar",
+                        "Mier",
+                        "Jue",
+                        "Vie",
+                        "Sáb"
+                    ],
+                    "monthNames": [
+                        "Enero",
+                        "Febrero",
+                        "Marzo",
+                        "Abril",
+                        "Mayo",
+                        "Junio",
+                        "Julio",
+                        "Agosto",
+                        "Septiembre",
+                        "Octubre",
+                        "Noviembre",
+                        "Diciembre"
+                    ],
+                    "firstDay": 0
+                }
+            }, cb);
+
+            cb(start, end);
+
+        });
+
+
+    </script>
+
+    <script type="text/javascript">
+
+        var mensaje = '@ViewBag.mensaje';
+        var tipoMensaje = '@ViewBag.tipoMensaje';
+        $('#btnVentas').removeAttr("hidden");
+
+        if (tipoMensaje != '') {
+            Swal.fire({
+                position: 'top-end',
+                icon: tipoMensaje,
+                title: mensaje,
+                showConfirmButton: false,
+                timer: 3000
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#AjaxForm').submit();
+                }
+            })
+        } else {
+            $('#btnVentas').text("Ir a Ventas");
+        }
+
+        function eliminar(id) {
+
+            Swal.fire({
+                title: 'Seguro desea eliminar?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    eliminacionConfirmada(id);
+                }
+            });
+
+
+        }
+
+        function eliminacionConfirmada(id) {
+            $.ajax({
+                url: "@(Url.Action("Delete"))",
+                type: "POST",
+                beforeSend: function () {
+                    $("#preloader").fadeIn(5);
+                },
+                complete: function () {
+                    $("#preloader").fadeOut("slow");
+                },
+                data: {
+                    id: id
+                },
+                success: function (data) {
+                    if (data.Success) {
+                        Swal.fire(
+                            'Eliminado!',
+                            'El remito fue eliminado.',
+                            'success'
+                        ).then((result) => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ocurrió un Error!'
+                        }).then((result) => {
+                            location.reload();
+                        });
+                    }
+                    //recargar pagina
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ocurrió un Error!',
+                        text: errorThrown
+                    }).then((result) => {
+                        location.reload();
+                    });
+                    //recargar pagina
+                }
+            });
+        }
+
+        function calularComision(total) {
+            Swal.fire({
+                title: 'El total del transportista es: $' + total,
+                icon: 'info',
+                showCancelButton: false,
+                confirmButtonText: 'Ok',
+                showLoaderOnConfirm: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Ingresar en Porcentaje, la comisión (%)',
+                        input: 'text',
+                        inputAttributes: {
+                            autocapitalize: 'off'
+                        },
+                        showCancelButton: true,
+                        confirmButtonText: 'Calcular',
+                        showLoaderOnConfirm: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            if (!isNumeric(result.value)) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Debe ingresar una cantidad válida!'
+                                });
+                            } else {
+                                var resultado = total * (result.value / 100);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'La Comisión es de: $' + resultado.toString()
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+    </script>
+
+}

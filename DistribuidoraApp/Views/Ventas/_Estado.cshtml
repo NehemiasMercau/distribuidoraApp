@@ -1,0 +1,83 @@
+﻿@model Negocio.entidades.Venta
+
+
+<style type="text/css">
+    body {
+        padding-top: 20px;
+    }
+
+    .panel-body .btn:not(.btn-block) {
+        width: 120px;
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="card mb-3" style="width: 100%;">
+    <div class="card-header text-center text-dark">
+        <h3>Cambios de Estado</h3>
+        <h4>La venta esta: <strong>@Model.Estado.Nombre</strong></h4>
+    </div>
+    <div class="card-body text-dark text-center ">
+        @{
+            string ve = Model.VentaId.ToString();
+            int EstadoId = (int)Model.EstadoId;
+        }
+        @if (EstadoId == 4)
+        {//completada
+            <button class="btn btn-info btn-lg btn-block" onclick="accionVenta(@ve, 2)"><span class="fas fa-paper-plane"></span> En Pedido</button>
+            <button class="btn btn-warning btn-lg btn-block" onclick="accionVenta(@ve, 3)"><span class="fas fa-shopping-cart"></span> En Preparación</button>
+            <button class="btn btn-danger btn-lg btn-block" onclick="accionVenta(@ve, 5)"><span class="fas fa-power-off"></span> Anular</button>
+        }
+        else if (EstadoId == 3)
+        {//preparacion
+            if (Model.ClienteId != null)
+            {
+                <button class="btn btn-success btn-lg btn-block" onclick="getFormasPago(@ve, 4)"><span class="fas fa-check-circle"></span> Completar</button>
+            }
+            else
+            {
+                <button class="btn btn-success btn-lg btn-block" onclick="getClientes(@ve, 4)"><span class="fas fa-check-circle"></span> Completar</button>
+            }
+
+            <button class="btn btn-danger btn-lg btn-block" onclick="accionVenta(@ve, 5)"><span class="fas fa-power-off"></span> Anular</button>
+            <button class="btn btn-primary btn-lg btn-block" onclick="accionVenta(@ve, 6)"><span class="fas fa-send"></span> Despachar</button>
+            <button class="btn btn-info btn-lg btn-block" onclick="accionVenta(@ve, 2)"><span class="fas fa-paper-plane"></span> En Pedido</button>
+        }
+        else if (EstadoId == 2)
+        {//pedido
+            if (Model.ClienteId != null)
+            {
+                <button class="btn btn-success btn-lg btn-block" onclick="getFormasPago(@ve, 4)"><span class="fas fa-check-circle"></span> Completar</button>
+            }
+            else
+            {
+                <button class="btn btn-success btn-lg btn-block" onclick="getClientes(@ve, 4)"><span class="fas fa-check-circle"></span> Completar</button>
+            }
+            <button class="btn btn-warning btn-lg btn-block" onclick="accionVenta(@ve, 3)"><span class="fas fa-shopping-cart"></span> En Preparación</button>
+            <button class="btn btn-primary btn-lg btn-block" onclick="accionVenta(@ve, 6)"><span class="fas fa-send"></span> Despachar</button>
+            <button class="btn btn-danger btn-lg btn-block" onclick="accionVenta(@ve, 5)"><span class="fas fa-power-off"></span> Anular</button>
+
+        }
+        else if (EstadoId == 5)
+        {//anulada
+            <button class="btn btn-info btn-lg btn-block" onclick="accionVenta(@ve, 2)"><span class="fas fa-paper-plane"></span> En Pedido</button>
+        }
+        else if (EstadoId == 6)
+        {//Despachado
+            if (Model.ClienteId != null)
+            {
+                <button class="btn btn-success btn-lg btn-block" onclick="getFormasPago(@ve, 4)"><span class="fas fa-check-circle"></span> Completar</button>
+            }
+            else
+            {
+                <button class="btn btn-success btn-lg btn-block" onclick="getClientes(@ve, 4)"><span class="fas fa-check-circle"></span> Completar</button>
+            }
+            <button class="btn btn-info btn-lg btn-block" onclick="accionVenta(@ve, 2)"><span class="fas fa-paper-plane"></span> En Pedido</button>
+            <button class="btn btn-danger btn-lg btn-block" onclick="accionVenta(@ve, 5)"><span class="fas fa-power-off"></span> Anular</button>
+        }
+
+
+
+
+    </div>
+</div>

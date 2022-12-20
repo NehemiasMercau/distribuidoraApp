@@ -1,0 +1,130 @@
+﻿@model Negocio.entidades.Cliente
+
+@*<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>*@
+
+
+@using (Ajax.BeginForm("Create", "Clientes", new AjaxOptions
+{
+    UpdateTargetId = "alert",
+    HttpMethod = "POST",
+    InsertionMode = InsertionMode.Replace,
+    LoadingElementDuration = 1500,
+    OnSuccess = "Success",
+    OnBegin = "Begin",
+    OnFailure = "Failure",
+    OnComplete = "Complete"
+}))
+{
+    @Html.AntiForgeryToken()
+    <br />
+    <div id="alert" class="alert alert-danger text-center text-black" style="display:none">
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="formAjax" class="form-horizontal form">
+                <h3 class="text-center">Crear Cliente</h3>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.RazonSocial, "Razón Social", htmlAttributes: new { @class = "control-label col-md-6" })
+                    <div class="col-md-12">
+                        @Html.EditorFor(model => model.RazonSocial, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                        @Html.ValidationMessageFor(model => model.RazonSocial, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CUIT, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-12">
+                        @Html.EditorFor(model => model.CUIT, new { htmlAttributes = new { @class = "form-control inputmask", @required = "required" } })
+                        @Html.ValidationMessageFor(model => model.CUIT, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CondicionIVAId, "Condicion IVA", htmlAttributes: new { @class = "control-label col-md-4 select2" })
+                    <div class="col-md-12">
+                        @Html.DropDownList("CondicionIVAId", null, htmlAttributes: new { @class = "form-control", @required = "required" })
+                        @Html.ValidationMessageFor(model => model.CondicionIVAId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-12">
+                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Direccion, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-12">
+                        @Html.EditorFor(model => model.Direccion, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Direccion, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Telefono, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-12">
+                        @Html.EditorFor(model => model.Telefono, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Telefono, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PersonaTipoId, "Persona Tipo", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-12">
+                        @Html.DropDownList("PersonaTipoId", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PersonaTipoId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                @Html.Hidden("esTemporal", (int)ViewBag.esTemporal)
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <input type="submit" value="Crear Cliente" class="btn btn-outline-success btn-block" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@*@section scripts{*@
+
+    <script src="~/Scripts/modernizr-2.8.3.js"></script>
+    <script src="~/Scripts/script-custom-validator.js"></script>
+
+    <script type="text/javascript">
+        $('.inputmask').inputmask("99-99999999-9");
+        
+
+        function Begin() {
+            console.log("Begin");
+        }
+
+        function Complete() {
+            console.log("Complete");
+        }
+
+        function Success(data) {
+            console.log("success");
+            $('#formAjax').hide();
+            console.log(data);
+            if (data.includes('No')) {
+                console.log('esta mal');
+            } else console.log('esta bien');
+            $('#alert').removeClass('alert-danger');
+            $('#alert').addClass('alert-success');
+            $('#alert').fadeIn(2000);
+        }
+
+        function Failure(data) {
+            console.log("Failure");
+        }
+
+    </script>
+@*}*@

@@ -1,0 +1,106 @@
+﻿@model Negocio.entidades.PrecioLista
+
+<div class="card" id="divResultado@(Model.PrecioListaId)">
+    @**@
+    @*@Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
+    <div class="card-body">
+        <h5 class="card-title"><strong>@Html.DisplayFor(modelItem => modelItem.Lista.Nombre)</strong></h5>
+        @if (Model.Lista.Descripcion == null)
+        {
+            <br />
+        }
+        else
+        {
+            <p class="card-text">@Html.DisplayFor(modelItem => modelItem.Lista.Descripcion)</p>
+        }
+
+        <hr />
+        @if (Model.Cargado == true)
+        {
+            string simbolo = "";
+            if (Model.MonedaId == 1)
+            {
+                simbolo = "$";
+            }
+            else
+            {
+                simbolo = "U$D";
+            }
+            <p class="card-text">Precio: @simbolo @Html.DisplayFor(modelItem => modelItem.Precio)</p>
+
+            <button class="btn btn-primary"
+                    data-toggle="modal"
+                    data-backdrop="true"
+                    data-target="#modalDatos"
+                    data-url="@(Url.Action("Details","Precios",new { id= Model.PrecioListaId }))"
+                    onclick="abrirModal(this)">
+                Modificar Este Precio
+            </button>
+
+        }
+        else
+        {
+            using (Ajax.BeginForm("Create", "Precios", new { id = Model.PrecioListaId, precio = Model.Precio }, new AjaxOptions
+            {
+                UpdateTargetId = "divResultado" + Model.PrecioListaId,
+                HttpMethod = "POST",
+                InsertionMode = InsertionMode.Replace,
+                LoadingElementDuration = 1500,
+                OnSuccess = "Success",
+                OnBegin = "Begin",
+                OnFailure = "Failure",
+                OnComplete = "Complete"
+
+            }))
+            {
+                @Html.AntiForgeryToken()
+
+                @Html.HiddenFor(modelItem => Model.PrecioListaId)
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="custom-control custom-radio">
+                            @if (Model.MonedaId == 1)
+                            {
+                                @Html.RadioButtonFor(model => model.MonedaId, Negocio.enumeradores.MonedaE.ARS, htmlAttributes: new { @id = "radioARS" + Model.PrecioListaId, @type = "radio", @class = "custom-control-input radioARS", @checked = "checked" })
+                            }
+                            else
+                            {
+                                @Html.RadioButtonFor(model => model.MonedaId, Negocio.enumeradores.MonedaE.ARS, htmlAttributes: new { @id = "radioARS" + Model.PrecioListaId, @type = "radio", @class = "custom-control-input radioARS" })
+                            }
+                            <label class="custom-control-label" for="radioARS@(Model.PrecioListaId)">ARS</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="custom-control custom-radio">
+                            @if (Model.MonedaId == 2)
+                            {
+                                @Html.RadioButtonFor(model => model.MonedaId, Negocio.enumeradores.MonedaE.USD, htmlAttributes: new { @id = "radioUSD" + Model.PrecioListaId, @type = "radio", @class = "custom-control-input radioUSD", @checked = "checked" })
+                            }
+                            else
+                            {
+                                @Html.RadioButtonFor(model => model.MonedaId, Negocio.enumeradores.MonedaE.USD, htmlAttributes: new { @id = "radioUSD" + Model.PrecioListaId, @type = "radio", @class = "custom-control-input radioUSD" })
+                            }
+
+                            <label class="custom-control-label" for="radioUSD@(Model.PrecioListaId)">USD</label>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12 text-center">
+                        <label id="lblDolar@(Model.PrecioListaId)" class="control-label col-md-12 negrita"></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(modelItem => Model.Precio, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(modelItem => Model.Precio, new { htmlAttributes = new { @class = "form-control precio", @id = "txtPrecio" + Model.PrecioListaId } })
+                        @Html.ValidationMessageFor(modelItem => Model.Precio, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Generar" id="btnGenerar@(Model.PrecioListaId)" class="btn btn-outline-success generador" />
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

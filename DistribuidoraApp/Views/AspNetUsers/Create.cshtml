@@ -1,0 +1,111 @@
+﻿@model DistribuidoraAPI.Models.UserViewModel
+
+@{
+    ViewBag.Title = "Crear Nuevo Usuario";
+}
+<div class="row">
+    <div class="col-md-8">
+        <h2>Crear Nuevo Usuario</h2>
+    </div>
+    <div class="col-md-4">
+        <div>
+            @Html.ActionLink("Volver al listado", "Index", null, new { @class = "btn btn-warning pull-right" })
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal form">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.Hidden("SucursalId", 1)
+    <div class="form-group">
+        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+            @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Apellido, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Apellido, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+            @Html.ValidationMessageFor(model => model.Apellido, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Dni, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Dni, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+            @Html.ValidationMessageFor(model => model.Dni, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.PhoneNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+
+    @*<div class="alert alert-warning">
+        <div class="alert-heading">
+            <p><b>ATENCIÓN!</b> Tener en cuenta antes de continuar:</p>
+            <hr />
+        </div>
+        <p>Seleccionar si el usuario a crear es cajero/a o no.</p>
+        <p><em>Si el usuario es cajero/a, es necesario indicar la sucursal en la que realiza la carga.</em></p>
+    </div>*@
+    <div class="form-group">
+        @Html.LabelFor(model => model.PerfilId, "Perfil", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownList("PerfilId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control", @required="required" })
+            @Html.ValidationMessageFor(model => model.PerfilId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @Html.HiddenFor(model => model.SucursalId, 1)
+    @*<div class="form-group">
+        @Html.LabelFor(model => model.SucursalId, "Sucursal", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownList("SucursalId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.SucursalId, "", new { @class = "text-danger" })
+        </div>
+    </div>*@
+    <div class="form-group">
+        @Html.LabelFor(m => m.Password, new { @class = "col-md-4 control-label" })
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control required" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-4 control-label" })
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control required" })
+        </div>
+    </div>
+    @*<div class="alert alert-info">
+        <div class="alert-heading">
+            <p><b>Información sobre la creación del Usuario:</b></p>
+            <hr />
+        </div>
+        <p>Se enviará un mail a la casilla ingresada, para confirmar la cuenta.</p>
+    </div>*@
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Crear Usuario" class="btn btn-outline-success" />
+        </div>
+    </div>
+</div>
+}

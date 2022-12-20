@@ -1,0 +1,70 @@
+﻿@model Negocio.entidades.Lista
+
+@{
+    ViewBag.Title = "Eliminar Lista";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h3>Está seguro que desea eliminar la Lista?</h3>
+        <hr />
+        <p>
+            @Html.ActionLink("Volver al listado", "Index", null, new { @class = "btn btn-warning" })
+        </p>
+    </div>
+</div>
+
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Descripcion)
+        </dd>
+
+        <dt>
+            Tiene Recargo
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RecargoGeneral)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RecargoImporte)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RecargoImporte)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Fecha)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Fecha)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-outline-danger" />
+        </div>
+    }
+</div>

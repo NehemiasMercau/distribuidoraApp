@@ -1,0 +1,230 @@
+﻿@model IEnumerable<DistribuidoraAPI.Models.ProductoListViewModel>
+@using DistribuidoraAPI.Extensions;
+@{
+    decimal totalSuma = 0;
+    string totalSumaDisplay = "";
+    List<DistribuidoraAPI.Models.ProductoListViewModel> list = Model.ToList();
+}
+@{
+    Negocio.entidades.Venta valuePassedIn = this.ViewData.ContainsKey("VentaObjeto") ? (Negocio.entidades.Venta)this.ViewData["VentaObjeto"] : null;
+    decimal varPrecioUSD = this.ViewData.ContainsKey("USD") ? (decimal)this.ViewData["USD"] : 0;
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="table-responsive-sm">
+            <table id="tablaProductos" class="table table-bordered datatableEmpty">
+                <thead>
+                    <tr>
+                        <th>Codigo</th>
+                        <th>
+                            Nombre
+                        </th>
+                        <th>
+                            Precio
+                        </th>
+                        <th>
+                            Marca
+                        </th>
+                        <th>Cantidad</th>
+                        @if (valuePassedIn == null)
+                        {
+                            <th>Acciones</th>
+                        }
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.ToList().Count(); i++)
+                    {
+                        decimal precio = Model.ToList()[i].Precio;
+                        bool alerta = Model.ToList()[i].Alerta;
+                        string classTr = (alerta) ? "text-danger" : "";
+                        decimal cantidad = Model.ToList()[i].Cantidad;
+
+                        <tr class="@classTr">
+                            <td>@Html.DisplayFor(modelItem => Model.ToList()[i].Codigo)</td>
+                            <td>
+                                @Html.DisplayFor(modelItem => Model.ToList()[i].Nombre)
+                            </td>
+                            <td>
+                                @{
+                                    string precioDisplay = Model.ToList()[i].Precio.ToString();
+
+                                    decimal precioUSD = (ViewBag.PrecioUSD != null) ? ViewBag.PrecioUSD : varPrecioUSD;
+                                    string cambio = Model.ToList()[i].CambioStr;
+                                    if (Model.ToList()[i].Cambio == 2)
+                                    {
+                                        bool esEdicion = (ViewBag.esEdicion != null) ? (bool)ViewBag.esEdicion : false;
+                                        precio *= precioUSD;
+
+                                        cambio += " " + Model.ToList()[i].Precio;
+                                        if (!esEdicion)
+                                        {
+                                            precioDisplay = precio.ToString("0.00");
+                                        }
+                                        //precioDisplay = precio.ToString("0.00");
+                                    }
+                                }
+                                $@precioDisplay
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => Model.ToList()[i].Marca)
+                            </td>
+                            <td>
+                                @if (valuePassedIn == null)
+                                {
+                                    @Html.TextBoxFor(modelItem => Model.ToList()[i].Cantidad, htmlAttributes: new { @class = "form-control col-md-12 cantidad" })
+                                }
+                                else
+                                {
+                                    @Html.DisplayFor(modelItem => Model.ToList()[i].Cantidad)
+                                }
+
+                            </td>
+
+                            @if (valuePassedIn == null)
+                            {
+                                <td class="btn-group">
+                                    <button type="button" id="btnQuitar" class="btn btn-sm btn-danger" onclick="quitarItem(this)" title="Quitar"><i class="far fa-trash-alt"></i></button>
+                                    @if (Model.ToList()[i].Alerta)
+                                    {
+                                        <button type="button" id="btnVer" class="btn btn-sm btn-danger" onclick="verMinimo('@Model.ToList()[i].AlertStr')" title="Ver"><i class="fas fa-exclamation-circle"></i></button>
+                                    }
+                                </td>
+
+
+                                @Html.HiddenFor(modelItem => Model.ToList()[i].Codigo)
+                                @Html.HiddenFor(modelItem => Model.ToList()[i].Cambio)
+                                @Html.HiddenFor(modelItem => Model.ToList()[i].CambioStr)
+                                @Html.HiddenFor(modelItem => Model.ToList()[i].Marca)
+                                @Html.HiddenFor(modelItem => Model.ToList()[i].ProductoId)
+                                @Html.HiddenFor(modelItem => Model.ToList()[i].Minimo)
+                                @Html.HiddenFor(modelItem => Model.ToList()[i].Nombre)
+                                @Html.HiddenFor(modelItem => Model.ToList()[i].Precio)
+                                @Html.HiddenFor(modelItem => Model.ToList()[i].Cantidad)
+                                @Html.HiddenFor(modelItem => Model.ToList()[i].TipoStock)
+                                @Html.HiddenFor(modelItem => Model.ToList()[i].AlertStr)
+                                @Html.HiddenFor(modelItem => Model.ToList()[i].ListaId)
+                            }
+                            <td style="display:none">@Html.DisplayFor(modelItem => Model.ToList()[i].ListaId)</td>
+
+                        </tr>
+                        totalSuma += (precio * cantidad);
+                    }
+
+                    @{
+                        totalSumaDisplay = "$" + totalSuma.ToString("0.00");
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <h5 class="card-header font-weight-bold">Resumen</h5>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label for="lblTotal" class="col-sm-4 col-form-label font-weight-bold">Total</label>
+                    <div class="col-sm-8">
+                        <label id="lblTotal" class="col-form-label">@totalSumaDisplay</label>
+                    </div>
+
+                </div>
+                <hr />
+                <div class="form-group row">
+                    <label for="txtDescuento" class="col-sm-4 col-form-label font-weight-bold">Descuento</label>
+                    <div class="col-sm-4">
+                        @if (valuePassedIn != null)
+                        {
+                            <label>$@valuePassedIn.Descuento</label>
+                        }
+                        else
+                        {
+                            <input name="Descuento" class="form-control" id="Descuento">
+                        }
+
+                    </div>
+
+                </div>
+                <hr />
+                <div class="form-group row">
+                    <label for="txtRecargo" class="col-sm-4 col-form-label font-weight-bold">Recargo (%)</label>
+                    <div class="col-sm-4">
+                        @if (valuePassedIn != null)
+                        {
+                            <label>@valuePassedIn.Recargo %</label>
+                        }
+                        else
+                        {
+                            <input type="number" class="form-control" id="Recargo">
+                        }
+
+                    </div>
+                </div>
+                <div id="divPromos" hidden>
+                    <hr />
+                    <div class="form-group row">
+                        <label for="lblPromos" class="col-sm-4 col-form-label font-weight-bold">Promos</label>
+                        <div class="col-sm-8">
+                            <label id="lblPromos" name="Promos" class="col-form-label"></label>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group row">
+                    <label for="lblTotalGral" class="col-sm-4 col-form-label font-weight-bold">Total Gral.</label>
+                    <div class="col-sm-8">
+                        @if (valuePassedIn != null)
+                        {
+                            <h3>$@valuePassedIn.Final</h3>
+                        }
+                        else
+                        {
+                            <h3>
+                                <label id="lblTotalGral" name="Final" class="col-form-label"></label>
+                            </h3>
+                        }
+
+                    </div>
+                </div>
+
+                @if (valuePassedIn == null)
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group ">
+                                <div class="col-md-12 ">
+                                    @*@if (User.Identity.GetPerfilId() == "2")//Preventista
+                                        {
+                                            <input type="button" onclick="calcularPromociones()" id="btnPromociones" value="Calcular Promociones" class="btn btn-outline-primary btn-block" />
+
+                                        }
+                                        else
+                                        {
+                                            <input type="button" onclick="getListasPromo()" id="btnPromociones" value="Calcular Promociones" class="btn btn-outline-primary btn-block" />
+                                        }
+                                        <hr />*@
+                                    <div id="alertaPromos">
+                                    </div>
+                                    @if (User.Identity.GetPerfilId() == "3")//Preventista
+                                    {
+                                        <input type="submit" id="btnCrearPedido" value="Crear Pedido" class="btn btn-outline-success btn-block btnCrear" />
+                                    }
+                                    else
+                                    {
+                                        <input type="submit" btn="btnCrearVenta" value="Crear Venta" class="btn btn-outline-success btn-block btnCrear" />
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+
+            </div>
+        </div>
+    </div>
+</div>

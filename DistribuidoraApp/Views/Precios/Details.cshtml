@@ -1,0 +1,146 @@
+﻿@model DistribuidoraAPI.Models.PrecioListaViewModel
+
+@{
+    ViewBag.Title = "Detalles";
+}
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins text-center">
+                <div class="ibox-title">
+                    <h5>Detalle del Precio</h5>
+                </div>
+                <div class="ibox-content">
+                    <dl class="dl-horizontal">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Precio)
+                        </dt>
+                        @{
+                            string simbolo = "";
+                            if (Model.MonedaId == Negocio.enumeradores.MonedaE.ARS)
+                            {
+                                simbolo = "$";
+                            }
+                            else
+                            {
+                                simbolo = "U$D";
+                            }
+
+                            <dd>
+                                @simbolo @Html.DisplayFor(model => model.Precio)
+                            </dd>
+                        }
+                        <dt>
+                            Lista
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Lista.Nombre)
+                        </dd>
+                    </dl>
+                    @using (Html.BeginForm("Edit", "Precios", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <hr />
+                        @Html.HiddenFor(model => model.PrecioListaId)
+                        @Html.HiddenFor(model => model.ProductoId)
+                        @Html.HiddenFor(model => model.ComboId)
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="custom-control custom-radio">
+                                    @Html.RadioButtonFor(model => model.MonedaId, Negocio.enumeradores.MonedaE.ARS, htmlAttributes: new { @id = "radioARS", @Name = "MonedaId", @type = "radio", @class = "custom-control-input" })
+                                    <label class="custom-control-label" for="radioARS">ARS</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="custom-control custom-radio">
+                                    @Html.RadioButtonFor(model => model.MonedaId, Negocio.enumeradores.MonedaE.USD, htmlAttributes: new { @id = "radioUSD", @Name = "MonedaId", @type = "radio", @class = "custom-control-input" })
+                                    <label class="custom-control-label" for="radioUSD">USD</label>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12 text-center">
+                                <label id="lblDolar" class="control-label col-md-12 negrita"></label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(modelItem => Model.Precio, "Nuevo Precio", htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.EditorFor(modelItem => Model.Precio, new { htmlAttributes = new { @class = "form-control text-center precio", @required = true } })
+                                @Html.ValidationMessageFor(modelItem => Model.Precio, "", new { @class = "text-danger" })
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-5"><input class="btn btn-outline-success btn-block" value="Modificar" type="submit" /></div>
+                            <div class="col-md-5">
+                                <a class="btn btn-outline-danger btn-block"
+                                   data-target="#modalDatos"
+                                   data-dismiss="modal">Cancelar</a>
+                            </div>
+                        </div>
+                        <div class="col-md-1"></div>
+                        <br />
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#radioUSD').on('click', function () {
+                var idAttr = $(this).attr('id');
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetPrecioDolarStatic", "Precios")',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: successFunc,
+                    error: errorFunc
+                });
+
+                function successFunc(data, status) {
+                    var dolar = data.Dolar.toString();
+                    $('#lblDolar').text('U$D: ' + dolar.trim().replace(".", ","));
+                    //let count = data.lenght;
+                    //var result = [];
+
+                    //for (var i in data)
+                    //    result.push(data[i].casa);
+                    //console.log(result);
+                    //for (var i = 0; i < result.length; i++) {
+                    //    let objeto = result[i];
+                    //    if (objeto.nombre === 'Dolar Oficial') {
+                    //        $('#lblDolar').text('U$D: ' + objeto.venta);
+                    //    }
+                    //}
+                }
+
+                function errorFunc() {
+                    console.log('error');
+                }
+            });
+
+            $('#radioARS').on('click', function () {
+                var idAttr = $(this).attr('id');
+                $('#lblDolar').text('');
+            });
+
+            $('.precio').on("keyup", function (e) {
+                if (e.keyCode == 110 || e.keyCode == 190) {
+                    var valor = $(this).val();
+                    valor = valor.replace(".", ",");
+                    $(this).val(valor);
+                }
+            });
+
+        });
+    </script>
+}

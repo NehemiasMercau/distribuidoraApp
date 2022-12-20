@@ -1,0 +1,18 @@
+venta minorista 3 precios distintos
+
+venta mayoristas 5 precios distintos, preventistas (3), venta mayorista presencial (2 lstas)
+
+
+Comision para listas de precios para los preventistas
+
+Agregar a la venta, para cada producto la lista.
+
+Listas de precios asociadas a los produtos, con tabla aparte.
+
+-------------------------------------------------------------------------------------------
+
+Transportistas:
+
+Monto que transporta, N° remito, fecha. Muchos remitos. 
+
+Genera el remito con el transportista... 

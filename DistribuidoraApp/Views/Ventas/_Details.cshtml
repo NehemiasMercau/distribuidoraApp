@@ -1,0 +1,137 @@
+﻿@model Negocio.entidades.Venta
+
+
+<div class="card mb-3" style="width: 100%;">
+    <div class="card-header text-center text-dark">
+        <h3>Detalles de la Venta Nº @Model.VentaId</h3>
+    </div>
+    <div class="card-body text-dark text-center ">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        Campo
+                    </th>
+                    <th>
+                        Valor
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Tipo de Venta</td>
+                    <td>
+                        @Html.DisplayFor(model => model.TipoVenta.Nombre)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Sucursal
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(model => model.Sucursal.Nombre)
+                    </td>
+                </tr>
+                <tr>
+                @if (ViewBag.DatosCliente != null)
+                {
+                    <tr>
+                        <td>
+                            Cliente
+                        </td>
+
+                        <td>
+                            @ViewBag.DatosCliente
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td>
+                        Tipo de Cobro
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(model => model.TipoCobro.Nombre)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Total
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(model => model.Total)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Descuento
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(model => model.Descuento)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Final
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(model => model.Final)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Fecha Creación
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(model => model.Fecha)
+                    </td>
+                </tr>
+                @if (Model.FechaModificacion != null)
+                {
+                    <tr>
+                        <td>
+                            Fecha de Modificación
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(model => model.FechaModificacion)
+                        </td>
+                    </tr>
+                }
+                @if (Model.Observaciones != null)
+                {
+                    <tr>
+                        <td>
+                            Observaciones
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(model => model.Observaciones)
+                        </td>
+                    </tr>
+                }
+                @if (Model.DireccionEnvio != null)
+                {
+                    <tr>
+                        <td>
+                            Dirección de Envío
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(model => model.DireccionEnvio)
+                        </td>
+                    </tr>
+                }
+               
+            </tbody>
+        </table>
+
+
+    </div>
+</div>
+

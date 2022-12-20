@@ -1,0 +1,233 @@
+﻿@model Negocio.entidades.Arqueo
+@using DistribuidoraAPI.Models
+@using DistribuidoraAPI.Extensions
+@{
+    ViewBag.Title = "Detalles del Arqueo";
+    List<Negocio.entidades.Venta> listVentas = ViewBag.listVentas;
+    List<ArqueoResumenModel> listTipoCobros = ViewBag.listTipoCobros;
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3>Detalles del Arqueo</h3>
+                <h5></h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="row no-gutters align-items-center">
+                            <p>Fecha Inicio: <label class="font-weight-bold">@Model.FechaInicio.ToShortDateString()</label></p>
+                        </div>
+                        <div class="row no-gutters align-items-center">
+                            <p>Hora Inicio: <label class="font-weight-bold">@Model.HoraInicio</label></p>
+                        </div>
+                        <div class="row no-gutters align-items-center">
+                            @if (Model.FechaFin != null)
+                            {
+                                <p>Fecha Fin: <label class="font-weight-bold">@Model.FechaFin.Value.ToShortDateString()</label></p>
+                            }
+                            else
+                            {
+                                <p>
+                                    Fecha Fin: Sin Finalizar
+                                </p>
+                            }
+                        </div>
+                        <div class="row no-gutters align-items-center">
+                            <p>Hora Fin: <label class="font-weight-bold">@Model.HoraFin</label></p>
+                        </div>
+
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row no-gutters align-items-center">
+                            <p>Total: <label class="font-weight-bold">$@Model.Total</label></p>
+                        </div>
+                        <div class="row no-gutters align-items-center">
+                            @if (User.Identity.GetPerfilId() == "3")
+                            {
+                                <p>Cantidad Pedidos: <label class="font-weight-bold">@ViewBag.CantVentas</label></p>
+                            }
+                            else
+                            {
+                                <p>Cantidad Ventas: <label class="font-weight-bold">@ViewBag.CantVentas</label></p>
+                            }
+                        </div>
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Tipo
+                                    </th>
+                                    <th>
+                                    </th>
+                                    <th>
+                                        Valor
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (ArqueoResumenModel item in listTipoCobros)
+                                {
+                                    <tr>
+                                        <td>@Html.DisplayFor(modelItem => item.Tipo.Nombre)</td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Cant)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Valor)
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                        @*<div class="row no-gutters align-items-center">
+                                <p>Total Efectivo: <label class="font-weight-bold">$@Model.TotalEfectivo</label></p>
+                            </div>*@
+                        @*<div class="row no-gutters align-items-center">
+                                <p>Total Otros Medios: <label class="font-weight-bold">$@Model.Total - @Model.TotalEfectivo</label></p>
+                            </div>*@
+                        <div class="row no-gutters align-items-center">
+                            @if (ViewBag.Dinero != null)
+                            {
+                                <p>Dinero Ingresado: <label class="font-weight-bold text-success">$@ViewBag.Dinero</label></p>
+                            }
+                            else
+                            {
+                                <p>Dinero Ingresado: <label class="font-weight-bold">@ViewBag.Dinero</label></p>
+                            }
+
+                        </div>
+                    </div>
+                    @if (User.Identity.GetPerfilId() != "3")
+                    {
+                        <div class="col-md-4">
+                            <div class="row no-gutters align-items-center">
+                                <p>Iniciado Con: <label class="font-weight-bold">$@Model.Iniciado</label></p>
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <p>Sobrante: <label class="font-weight-bold text-warning">$@Model.Sobrante</label></p>
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <p>Faltante: <label class="font-weight-bold text-danger">$@Model.Faltante</label></p>
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <p>Finalizado Con: <label class="font-weight-bold">$@Model.Finalizado</label></p>
+
+                            </div>
+                        </div>
+                    }
+                </div>
+
+            </div>
+            <div class="card-footer">
+                <p>Usuario Inició: @ViewBag.UsuarioInicio</p>
+                <p>Usuario Finalizó: @ViewBag.UsuarioFinalizo</p>
+                @if (ViewBag.deArqueo == null)
+                {
+                    if (User.Identity.GetPerfilId() == "3")
+                    {
+                        <a class="btn btn-success" href="@(Url.Action("Index", "Ventas"))">Ir al Panel de Pedidos</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-success" href="@(Url.Action("Index", "Ventas"))">Ir al Panel de Ventas</a>
+                    }
+
+                }
+                <a class="btn btn-warning" target="_blank" href="@(Url.Action("Reporte", "Arqueos", new { id= Model.ArqueoId }))">Imprimir Arqueo</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @if (listVentas.Count > 0)
+        {
+            <div class="card text-center">
+                @if (User.Identity.GetPerfilId() == "3")
+                {
+                    <div class="card-header">
+                        Listado de Pedidos
+                    </div>
+                }
+                else
+                {
+                    <div class="card-header">
+                        Listado de Ventas
+                    </div>
+                }
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-bordered datatable">
+                                <tr>
+
+                                    @if (User.Identity.GetPerfilId() == "3")
+                                    {
+                                        <th>
+                                            Pedido Id
+                                        </th>
+                                    }
+                                    else
+                                    {
+                                        <th>
+                                            Venta Id
+                                        </th>
+                                    }
+
+
+                                    <th>
+                                        Fecha
+                                    </th>
+                                    <th>
+                                        Monto
+                                    </th>
+                                    <th>
+                                        Tipo
+                                    </th>
+                                    @*<th></th>*@
+                                </tr>
+
+                                @foreach (var item in listVentas.ToList())
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.VentaId)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Fecha)
+                                        </td>
+                                        <td>
+                                            @{ string final = item.Final.ToString().Replace(",", ".");
+                                            }
+                                            $@final
+                                            @*@Html.DisplayFor(modelItem => item.Final)*@
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.TipoCobro.Nombre)
+                                        </td>
+                                        @*<td>
+                                                @if (ViewBag.deArqueo == null)
+                                                {
+                                                    <a href="@(Url.Action("Reporte", "Ventas", new { id = item.VentaId }))" class="btn btn-sm btn-warning" target="_blank" title="Recibo"><i class="fas fa-file-pdf"></i></a>
+                                                }
+
+                                            </td>*@
+                                    </tr>
+                                }
+
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        }
+    </div>
+</div>

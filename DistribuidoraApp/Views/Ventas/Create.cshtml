@@ -1,0 +1,832 @@
+﻿@using Microsoft.AspNet.Identity;
+@using DistribuidoraAPI.Extensions;
+
+@model DistribuidoraAPI.Models.VentaViewModel
+
+@{
+    if (User.Identity.GetPerfilId() == "3")//Preventista
+    {
+        ViewBag.Title = "Crear Nuevo Pedido";
+    }
+    else
+    {
+        ViewBag.Title = "Crear Nueva Venta";
+    }
+
+    IEnumerable<DistribuidoraAPI.Models.ProductoListViewModel> productoListViewModels = (IEnumerable<DistribuidoraAPI.Models.ProductoListViewModel>)ViewBag.productoListViewModel;
+}
+
+<style type="text/css">
+    .ui-autocomplete {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1000;
+        float: left;
+        display: none;
+        min-width: 160px;
+        _width: 160px;
+        padding: 4px 0;
+        margin: 2px 0 0 0;
+        list-style: none;
+        background-color: #ffffff;
+        border-color: #ccc;
+        border-color: rgba(0, 0, 0, 0.2);
+        border-style: solid;
+        border-width: 1px;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        -webkit-background-clip: padding-box;
+        -moz-background-clip: padding;
+        background-clip: padding-box;
+        *border-right-width: 2px;
+        *border-bottom-width: 2px;
+    }
+
+        .ui-autocomplete .ui-menu-item > a.ui-corner-all {
+            display: block;
+            padding: 3px 15px;
+            clear: both;
+            font-weight: normal;
+            line-height: 18px;
+            color: #555555;
+            white-space: nowrap
+        }
+
+            .ui-autocomplete .ui-menu-item > a.ui-corner-all.ui-state-hover, .ui-autocomplete .ui-menu-item > a.ui-corner-all.ui-state-active {
+                color: #ffffff;
+                text-decoration: none;
+                background-color: #0088cc;
+                border-radius: 0px;
+                -webkit-border-radius: 0px;
+                -moz-border-radius: 0px;
+                background-image: none
+            }
+
+    .ui-autocomplete-loading {
+        background: url(http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/images/ui-anim_basic_16x16.gif) no-repeat right center
+        /*background: url(/Images/loading2.gif) no-repeat center center*/
+    }
+</style>
+
+
+<div class="row">
+    <div class="col-md-8">
+        @if (User.Identity.GetPerfilId() == "3")//Preventista
+        {
+            <h2>Crear Nuevo Pedido</h2>
+        }
+        else
+        {
+            <h2>Crear Nueva Venta</h2>
+        }
+
+    </div>
+    <div class="col-md-4">
+        <div>
+            @Html.ActionLink("Volver al listado", "Index", null, new { @class = "btn btn-warning pull-right" })
+        </div>
+    </div>
+</div>
+
+<hr />
+
+@using (Html.BeginForm("Create", "Ventas", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    HtmlHelper.UnobtrusiveJavaScriptEnabled = false;
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-horizontal form">
+                @if ((int)ViewBag.ArqueoId != 0)
+                {
+                    @Html.Hidden("ArqueoId", (int)ViewBag.ArqueoId)
+                }
+
+                @if (User.Identity.GetPerfilId() == "2")//Caja
+                {
+                    @Html.Hidden("ListaId", 1) //Lista Minorista
+                }
+                else
+                {
+                    <div class="form-group">
+                        @Html.Label("Lista", htmlAttributes: new { @class = "control-label col-md-12" })
+                        <div class="col-md-12">
+                            @Html.DropDownList("ListaId", null, htmlAttributes: new { @class = "form-control" })
+                        </div>
+                    </div>
+                }
+
+
+                @if (User.Identity.GetPerfilId() == "2")//Caja
+                {
+                    @Html.Hidden("EstadoId", Convert.ToInt32(Negocio.enumeradores.EstadoE.Completada))
+                }
+                else if (User.Identity.GetPerfilId() == "3")//Preventista
+                {
+                    @Html.Hidden("EstadoId", Convert.ToInt32(Negocio.enumeradores.EstadoE.Pedido))
+                }
+                else
+                {//Cualquier otro tiene que seleccionar el estado
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.EstadoId, "Estado", htmlAttributes: new { @class = "control-label col-md-12" })
+                        <div class="col-md-12">
+                            @Html.DropDownList("EstadoId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control", @required = "required" })
+                            @Html.ValidationMessageFor(model => model.EstadoId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                }
+
+                @if (User.Identity.GetPerfilId() == "2")//Caja
+                {
+                    @Html.Hidden("TipoVentaId", Convert.ToInt32(Negocio.enumeradores.TipoVentaE.Caja))
+                }
+                else if (User.Identity.GetPerfilId() == "3")//Preventista
+                {
+                    @Html.Hidden("TipoVentaId", Convert.ToInt32(Negocio.enumeradores.TipoVentaE.Preventista))
+                }
+                else
+                {
+                    @Html.Hidden("TipoVentaId", Convert.ToInt32(Negocio.enumeradores.TipoVentaE.Administracion))
+                    <div class="form-group">
+                        @Html.Label("Preventista", "Preventista", htmlAttributes: new { @class = "control-label col-md-12" })
+                        <div class="col-md-12">
+                            @Html.DropDownList("PreventistaId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control" })
+                        </div>
+                    </div>
+                    @*<div class="form-group">
+                            @Html.LabelFor(model => model.TipoVentaId, "Tipo de Venta", htmlAttributes: new { @class = "control-label col-md-12" })
+                            <div class="col-md-12">
+                                @Html.DropDownList("TipoVentaId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.TipoVentaId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>*@
+                }
+
+                @if (User.Identity.GetSucursalId() != null)
+                {
+                    var SucursalId = User.Identity.GetSucursalId();
+                    @Html.Hidden("SucursalId", Convert.ToInt32(SucursalId))
+                }
+                else
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.SucursalId, "Sucursal", htmlAttributes: new { @class = "control-label col-md-12" })
+                        <div class="col-md-12">
+                            @Html.DropDownList("SucursalId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.SucursalId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                }
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ClienteId, "Cliente", htmlAttributes: new { @class = "control-label col-md-12" })
+                    <div class="col-md-12">
+                        <div class="input-group mb-2 mr-sm-2">
+                            <div id="ClientesDiv">
+                                @Html.DropDownList("ClienteId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control select2" })
+                            </div>
+                            @Html.ValidationMessageFor(model => model.ClienteId, "", new { @class = "text-danger" })
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-success"
+                                    data-toggle="modal"
+                                    data-backdrop="true"
+                                    data-target="#modalDatos"
+                                    data-url="@(Url.Action("Create", "Clientes", new { esTemporal = 1 }))"
+                                    onclick="abrirModal(this)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                @if (User.Identity.GetPerfilId() == "3")
+                {
+                    @Html.Hidden("TipoCobroId", 4) //Cta. Cte.
+                }
+                else
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.TipoCobroId, "Tipo de Cobro", htmlAttributes: new { @class = "control-label col-md-12" })
+                        <div class="col-md-12">
+                            @Html.DropDownList("TipoCobroId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control", @required = "required" })
+                            @Html.ValidationMessageFor(model => model.TipoCobroId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" disabled class="custom-control-input" id="cbxConFactura" name="ConFactura" value="True">
+                                <label class="custom-control-label" for="cbxConFactura">Con Factura</label>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Observaciones, htmlAttributes: new { @class = "control-label col-md-12" })
+                    <div class="col-md-12">
+                        @Html.EditorFor(model => model.Observaciones, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Observaciones, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                @if (User.Identity.GetPerfilId() != "2") //Caja
+                {
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DireccionEnvio, "Dirección de Envío", htmlAttributes: new { @class = "control-label col-md-12" })
+                        <div class="col-md-12">
+                            @Html.EditorFor(model => model.DireccionEnvio, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.DireccionEnvio, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    @Html.HiddenFor(model => model.CostoEnvio, new { @value = " " })
+
+                }
+
+
+
+
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card border ">
+
+                <div class="card-header">Productos incluídos:</div>
+                <div class="card-body text-success">
+                    <h5 class="card-title">Buscar productos</h5>
+
+                    @{ string txtBuscador = ""; }
+                    <div class="input-group mb-2 mr-sm-2">
+                        @Html.EditorFor(x => txtBuscador, "Buscador", new { htmlAttributes = new { @class = "form-control", @placeholder = "Código o descripción. Enter para buscar..." } })
+                    </div>
+
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="resultadoDiv">
+                                @if (productoListViewModels != null)
+                                {
+                                    @Html.Partial("_ProductosVenta", productoListViewModels)
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <input type="hidden" name="Total" id="inputTotal" />
+    <input type="hidden" name="Final" id="inputFinal" />
+
+
+}
+
+
+@section scripts {
+
+    <script type="text/javascript">
+
+        function changeTipoCobro(id) {
+            console.log(id);
+            var IdTipoCobro = 0;
+            if (id == null) {
+                console.log('a cargar el valor');
+
+                IdTipoCobro = 1;
+            } else {
+                IdTipoCobro = id;
+            }
+            console.log(IdTipoCobro);
+            if (IdTipoCobro > 0) {
+                console.log("es mayor a cero");
+                if (IdTipoCobro == 1 || IdTipoCobro == 4 || IdTipoCobro == 5 || IdTipoCobro == 6 || IdTipoCobro == 7) {
+                    console.log("es 1");
+                    document.getElementById('cbxConFactura').checked = false;
+                    document.getElementById('cbxConFactura').disabled = false;
+                } else {
+                    document.getElementById('cbxConFactura').checked = true;
+                    document.getElementById('cbxConFactura').disabled = true;
+                }
+            } else {
+                document.getElementById('cbxConFactura').checked = false;
+                document.getElementById('cbxConFactura').disabled = true;
+            }
+            if (id == null) {
+                var tildado = '@Model.ConFactura';
+                console.log(tildado);
+                if (tildado) {
+                    document.getElementById('cbxConFactura').checked = true;
+                }
+            }
+        }
+
+        function getProductos() {
+            var idProductos = [];
+            $("#tablaProductos").find('tr').each(function (i, k) {
+                var $tds = $(this).find('td'),
+                    ProductId = $tds.eq(0).text().trim();
+                if (ProductId != "") {
+                    idProductos.push(ProductId);
+                }
+            });
+            return idProductos;
+        }
+
+        function getCantidadesPromocion() {
+            var cantidadesPromo = [];
+            $("#tablaProductos").find('tr').each(function (i, k) {
+                var $tds = $(this).find('td'),
+                    ProductId = $tds.eq(0).text().trim();
+                if (ProductId != "") {
+                    cantidadesPromo.push(0);
+                }
+            });
+            return cantidadesPromo;
+        }
+
+        function getListas() {
+            var listasId = [];
+            $("#tablaProductos").find('tr').each(function (i, k) {
+                var $tds = $(this).find('td'),
+                    ListaId = $tds.eq(6).text().trim();
+                if (ListaId != "") {
+                    console.log(ListaId);
+                    listasId.push(ListaId);
+                }
+            });
+        return listasId;
+        }
+
+        function sumatoriaValores() {
+            var total = parseFloat(0).toFixed(2);
+            var table = document.getElementById("tablaProductos");
+            var tbodyRowCount = table.tBodies[0].rows.length;
+            if (tbodyRowCount > 0) {
+                $("#tablaProductos").find('tr').each(function (i, k) {
+                    var $tds = $(this).find('td'),
+                        ProductId = $tds.eq(0).text().trim(),
+                        Precio = $tds.eq(2).text().trim(),
+                        Cantidad = $tds.eq(4).find('input').val();
+
+                    if (ProductId != "") {
+                        if (Cantidad === "") { Cantidad = 0; }
+                        console.log(Precio);
+                        console.log("Precio");
+                        //var index = Precio.indexOf('(');
+                        var pstr = Precio.replace("$", "").replace(",",".");
+                        //var pstr = parseFloat(Precio).toFixed(2);
+                        var PrecioF = parseFloat(pstr).toFixed(2);
+                        console.log(PrecioF);
+                        var CantidadF = parseFloat(Cantidad).toFixed(2);
+                        var multi = (PrecioF * CantidadF);
+                        console.log(multi);
+                        var result = (parseFloat(total) + parseFloat(multi)).toFixed(2);
+                        total = result;
+                        if (!isNaN(parseFloat(result))) {
+                            console.log(result);
+                            console.log("result");
+                            document.getElementById('lblTotal').innerHTML = result;
+                            document.getElementById('inputTotal').value = result.toString().replace(".", ",");
+                        }
+                    }
+                });
+            } else {
+                document.getElementById('lblTotal').innerHTML = "0";
+                document.getElementById('inputTotal').value = "0";
+                $('#txtBuscador').val('');
+            }
+            calculoDatos();
+        }
+
+        function getCantidades(cantMenor, codigo) {
+            var totales = [];
+            $("#tablaProductos").find('tr').each(function (i, k) {
+                var $tds = $(this).find('td'),
+                    Codigo = $tds.eq(0).text().trim(),
+                    CantidadValor = $tds.eq(4).find('input').val();
+                if (CantidadValor != undefined) {
+                    if (cantMenor != null) {
+                        if (Codigo == codigo) {
+                            var cantidadInt = parseInt(CantidadValor, 10);
+                            cantidadInt = cantidadInt - 1;
+                            CantidadValor = cantidadInt.toString();
+                        }
+                    }
+                    totales.push(CantidadValor);
+                }
+
+            });
+        return totales;
+        }
+
+        function calculoDatos() {
+            var Descuento = ($('#Descuento').val() != "") ? $('#Descuento').val() : 0;
+            var Recargo = ($('#Recargo').val() != "") ? $('#Recargo').val() : 0;
+            var Total = ($('#lblTotal').text() != "") ? $('#lblTotal').text().replace("$","").replace(",",".") : 0;
+            var TotalGral = ($('#lblTotalGral').text() != "") ? $('#lblTotalGral').text() : 0;
+            var TotalPromos = ($('#inputPromos').val() != "") ? $('#inputPromos').val() : 0;
+            console.log(TotalPromos);
+
+            let fTotal, fDescuento;
+            fTotal = parseFloat(Total).toFixed(2);
+            fDescuento = parseFloat(Descuento).toFixed(2);
+            var nuevoTotal = parseFloat(fTotal - fDescuento).toFixed(2);
+
+            let fNuevoTotal, fRecargo;
+            fNuevoTotal = parseFloat(nuevoTotal).toFixed(2);
+
+            if (Recargo != 0) {
+                fRecargo = parseFloat(Recargo).toFixed(2);
+                nuevoTotal = parseFloat(fNuevoTotal * (1+ (fRecargo / 100))).toFixed(2);
+            }
+            console.log("paso por aca");
+            var promos;
+
+            if (TotalPromos != undefined && TotalPromos != 0) {
+                promos = TotalPromos.toString().replace(",", ".");
+                console.log(promos);
+                promos = parseFloat(promos).toFixed(2);
+                console.log(promos);
+                nuevoTotal -= promos;
+                nuevoTotal = parseFloat(nuevoTotal).toFixed(2);
+                console.log(nuevoTotal);
+                $("#divPromos").removeAttr('hidden');
+                $('#lblPromos').text("$" + promos);
+            } else {
+                $("#divPromos").attr('hidden', 'hidden');
+                $('#lblPromos').text("");
+                //$('#alertaPromos').html("");
+            }
+
+            $('#lblTotalGral').text(nuevoTotal);
+            document.getElementById('inputFinal').value = nuevoTotal.toString().replace(".", ",");
+        }
+
+        function callAction(item, cantMenor) {
+
+            let lista = $('#ListaId').val();
+            jQuery.ajaxSettings.traditional = true;
+            var arrayCodigos = getProductos();
+            var arrayListas = getListas();
+            var cantidades;
+            if (cantMenor == null) {
+                cantidades = getCantidades();
+            } else {
+                cantidades = getCantidades(cantMenor, item.value);
+            }
+
+            $.ajax({
+                url: "@(Url.Action("GetProductosVenta"))",
+                type: "POST",
+                beforeSend: function () {
+                    $("#preloader").fadeIn(5);
+                },
+                complete: function () {
+                    $("#preloader").fadeOut("slow");
+                },
+                data: {
+                    id: item.value, listaId: lista, listas: arrayListas, array: arrayCodigos, cantidad: cantidades
+                },
+                success: function (data) {
+                    $('#resultadoDiv').html(data);
+                    sumatoriaValores();
+                    $('#txtBuscador').val('');
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ocurrió un Error!',
+                        text: errorThrown
+                    });
+                }
+            });
+        }
+
+        function getClientes() {
+            $.ajax({
+                url: "@(Url.Action("GetClientes", "Clientes"))",
+                type: "POST",
+                success: function (data) {
+                    var clientes = "<select class='form-control select2' id='ClienteId' name='ClienteId'>";
+                    clientes = clientes + '<option value="">Seleccionar...</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        clientes = clientes + '<option value=' + data[i].Value + '>' + data[i].Text + '</option>';
+                    }
+                    clientes = clientes + '</select>';
+                    $('#ClientesDiv').html(clientes);
+                    $('.select2').select2();
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ocurrió un Error!',
+                        text: errorThrown
+                    });
+                }
+            });
+        }
+
+        function calcularPromociones(ListaId) {
+            if (ListaId === undefined) {
+                ListaId = 0;
+            }
+            var productos = getProductos();
+            var cantidades = getCantidades();
+            var cantidadesPromo = getCantidadesPromocion();
+            console.log(productos);
+            console.log(cantidades);
+
+            $.ajax({
+                url: "@(Url.Action("CalcularPromociones"))",
+                type: "POST",
+                beforeSend: function () {
+                    $("#preloader").fadeIn(5);
+                },
+                complete: function () {
+                    $("#preloader").fadeOut("slow");
+                },
+                data: {
+                    productos: productos, cantidades: cantidades, cantidadesPromo: cantidadesPromo, listaPromo : ListaId
+                },
+                success: function (data) {
+                    console.log(data);
+                    $("#alertaPromos").html(data);
+                    calculoDatos();
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ocurrió un Error!',
+                        text: errorThrown
+                    });
+                }
+            });
+
+            $(".btnCrear").removeAttr("hidden");
+            $(".btnPromociones").attr("hidden", "hidden");
+        }
+
+        $("#txtBuscador").autocomplete({
+            delay: 0,
+            autoFocus: true,
+            source: function (request, response) {
+                let lista = $('#ListaId').val();
+                let txtBuscador = $('#txtBuscador').val();
+                    $.ajax({
+                    url: "@(Url.Action("GetProductosFiltro"))",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        filtro: txtBuscador, listaId : lista
+                    },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            $("#txtBuscador").removeClass("ui-autocomplete-loading");
+                            return {
+                                label: item.Nombre + ', ' + item.Codigo + ', ' + item.Marca + ', ' + item.TipoProducto,
+                                value: item.Codigo,
+                                cargado: item.Cargado
+                            };
+                        }));
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert(XMLHttpRequest.responseText);
+                    }
+
+                });
+            },
+            minLength: 2,
+            select: function (event, ui) {
+                event.preventDefault();
+                if (ui.item) {
+                    console.log(ui.item);
+                    if (ui.item.cargado === true) {
+                        $("#txtBuscador").val(ui.item.label);
+                        $("#txtBuscador").select();
+                        callAction(ui.item);
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'No se puede agregar. No tiene PRECIO cargado.'
+                        });
+                    }
+
+                }
+            },
+            focus: function (event, ui) {
+                event.preventDefault();
+            },
+            change: function (event, ui) {
+            },
+            search: function (event, ui) {
+            },
+
+        });
+
+        $("#txtBuscador").focus( function () {
+            $("#txtBuscador").select();
+        });
+
+        function getDomicilioCliente(ClienteId) {
+            $.ajax({
+                url: "@(Url.Action("GetClienteUnico", "Clientes"))",
+                type: "POST",
+                beforeSend: function () {
+                    $("#preloader").fadeIn(5);
+                },
+                complete: function () {
+                    $("#preloader").fadeOut("slow");
+                },
+                data: { id : ClienteId },
+                success: function (data) {
+                    console.log(data);
+                    if (data.Success) {
+                        $('#DireccionEnvio').val(data.Direccion);
+                    } else {
+                        $('#DireccionEnvio').val('');
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ocurrió un Error! No se pudo obtener la dirección',
+                        text: errorThrown
+                    });
+                    $('#DireccionEnvio').val('');
+                }
+            });
+        }
+
+        function getListasPromo() {
+            $.ajax({
+                url: "@(Url.Action("GetListas", "Listas"))",
+                type: "GET",
+                beforeSend: function () {
+                    $("#preloader").fadeIn(5);
+                },
+                complete: function () {
+                    $("#preloader").fadeOut("slow");
+                },
+                success: function (data) {
+                    console.log(data);
+                    var json = JSON.parse(data);
+                    seleccionarListasPromos(json);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ocurrió un Error! No se pudo obtener las listas',
+                        text: errorThrown
+                    });
+                }
+            });
+        }
+
+        function seleccionarListasPromos(listas) {
+
+            Swal.fire({
+                title: 'Seleccionar la Lista para calcular las Promociones',
+                input: 'select',
+                inputOptions: listas,
+                showCancelButton: true
+            }).then((result) => {
+                if (result.value) {
+                    calcularPromociones(result.value);
+                    //Swal.fire('You selected ' + result.value)
+                }
+            })
+        }
+
+        $(document).ready(function () {
+
+
+            $('.select2').select2();
+
+            $(document).on("change", "#Descuento", function (e) {
+                calculoDatos();
+            });
+
+            $(document).on("keyup", "#Descuento", function (e) {
+                calculoDatos();
+            });
+
+            $(document).on("keyup", "#Recargo", function (e) {
+                calculoDatos();
+            });
+
+            $(document).on("keyup", ".cantidad", function (e) {
+               // console.log(e.key);
+                if (e.key === 'Enter' || e.keyCode === 13) {
+                    console.log("entra al key ");
+                    var nombre = $(this).attr('name');
+                    var posicion = nombre.substr(0, nombre.indexOf('.'));
+                    var valorCodigo = document.getElementsByName(posicion + '.Codigo')[0].value;
+                    var texto = document.getElementsByName(posicion + '.Nombre')[0].value
+                    document.getElementsByTagName(nombre).value = $(this).val();
+
+                    const item = {
+                        label: texto,
+                        value: valorCodigo
+                    };
+                    console.log(item);
+                    callAction(item, true);
+                }
+
+            });
+
+            $(document).on("focusout", ".cantidad", function (e) {
+                console.log($(this).val());
+               
+                var nombre = $(this).attr('name');
+                var posicion = nombre.substr(0, nombre.indexOf('.'));
+                var valorCodigo = document.getElementsByName(posicion + '.Codigo')[0].value;
+                var texto = document.getElementsByName(posicion + '.Nombre')[0].value
+                document.getElementsByTagName(nombre).value = $(this).val();
+
+                const item = {
+                    label: texto,
+                    value: valorCodigo
+                };
+                console.log(item);
+                callAction(item, true);
+                
+
+            });
+
+            var esVuelta = '@ViewBag.esVuelta';
+            if (esVuelta != '') {
+                sumatoriaValores();
+                $('#txtBuscador').val('');
+                $("#txtBuscador").select();
+                console.log('llega a esvuelta');
+                changeTipoCobro(null);
+            }
+
+
+            $(window).keydown(function (event) {
+                if (event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
+            window.quitarItem = function (ele) {
+                var retVal = confirm("Está seguro que desea eliminar ?");
+                if (retVal == true) {
+                    var row = $(ele).closest('tr');
+                    row.remove();
+                    $('#inputPromos').val('');
+                    sumatoriaValores();
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            };
+
+            window.verMinimo = function (str) {
+                console.log(str);
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Stock mínimo!',
+                    text: str
+                });
+            };
+
+
+
+            $("#modalDatos").on("hidden.bs.modal", function () {
+                console.log('se cerro');
+                console.log(this);
+                getClientes();
+            });
+
+
+
+            $("#TipoCobroId").change(function () {
+                var IdTipoCobro = this.value;
+                console.log('llega a change');
+                changeTipoCobro(IdTipoCobro);
+            });
+
+            $("#ClienteId").change(function () {
+                var ClienteId = this.value;
+                getDomicilioCliente(ClienteId);
+            });
+
+        });
+
+    </script>
+}

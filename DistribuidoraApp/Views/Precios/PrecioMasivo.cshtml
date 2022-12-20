@@ -1,0 +1,318 @@
+﻿@model IEnumerable<DistribuidoraAPI.Models.PrecioMasivoViewModel>
+@using Microsoft.AspNet.Identity;
+@using DistribuidoraAPI.Extensions;
+@{
+    ViewBag.Title = "Actualización Masiva";
+}
+
+
+<div class="row">
+    <div class="col-md-8">
+        <h3>Listado de Precios</h3>
+    </div>
+    <div class="col-md-4">
+        <div>
+            @Html.ActionLink("Volver al listado", "Index", "Home", null, new { @class = "btn btn-warning pull-right" })
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            @using (Ajax.BeginForm("PrecioMasivoBusqueda", "Precios", null, new AjaxOptions
+            {
+                HttpMethod = "POST",
+                OnBegin = "onBeginSubmit",
+                OnComplete = "onCompleteSubmit",
+                OnFailure = "onFailureResult",
+                OnSuccess = "onSuccessResult",
+                UpdateTargetId = "divTable",
+                InsertionMode = InsertionMode.Replace
+            }, new { id = "AjaxForm" }))
+            {
+                <div class="card-header">Filtros</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.Label("Lista", "Lista", htmlAttributes: new { @class = "control-label col-md-12" })
+                                <div class="col-md-12">
+                                    @Html.DropDownList("ListaId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.Label("Proveedor", "Proveedor", htmlAttributes: new { @class = "control-label col-md-12" })
+                                <div class="col-md-12">
+                                    @Html.DropDownList("ProveedorId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.Label("Marca", "Marca", htmlAttributes: new { @class = "control-label col-md-12" })
+                                <div class="col-md-12">
+                                    @Html.DropDownList("MarcaId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.Label("Tipo Producto", "TipoProducto", htmlAttributes: new { @class = "control-label col-md-12" })
+                                <div class="col-md-12">
+                                    @Html.DropDownList("TipoProductoId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer  d-flex justify-content-center">
+                    <div class="row  d-flex justify-content-center">
+                        <input type="submit" id="btnBuscar" class="btn btn-success" value="Buscar" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-8">
+        <div id="divPreventista">
+            <button onclick="actualizarPorcentaje()" class="btn btn-outline-info">Actualizar todo por porcentaje</button>
+
+        </div>
+    </div>
+    <div class="col-md-4">
+        <button onclick="imprimirEtiquetas()" class="btn btn-outline-danger">Imprimir etiquetas de precios</button>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <div class="table-responsive" id="divTable">
+            @Html.Partial("_PrecioMasivo", Model)
+        </div>
+
+    </div>
+</div>
+
+@section scripts{
+
+    <script type="text/javascript">
+
+        function modificarPrecioARS(e) {
+            var id = $(e).attr("data-id");
+            Swal.fire({
+                title: 'Ingresar el nuevo precio en PESOS',
+                input: 'text',
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                showLoaderOnConfirm: true,
+
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var resultado = result.value.replace(",", ".");
+                    if (!isNumeric(resultado)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Debe ingresar un precio válido!'
+                        });
+                    } else {
+                        actualizarPrecio(resultado, 1, id);
+                    }
+                }
+            });
+        }
+
+        function modificarPrecioUSD(e) {
+            var id = $(e).attr("data-id");
+            Swal.fire({
+                title: 'Ingresar el nuevo precio en DÓLARES',
+                input: 'text',
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                showLoaderOnConfirm: true,
+
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var resultado = result.value.replace(",", ".");
+                    if (!isNumeric(resultado)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Debe ingresar un precio válido!'
+                        });
+                    } else {
+                        actualizarPrecio(resultado, 2, id);
+                    }
+                }
+            });
+        }
+
+        function actualizarPrecio(precio, moneda, id) {
+            $.ajax({
+                url: "@(Url.Action("ActualizarPrecio", "Precios"))",
+                type: "POST",
+                beforeSend: function () {
+                    $("#preloader").fadeIn(5);
+                },
+                complete: function () {
+                    $("#preloader").fadeOut("slow");
+                },
+                data: {precio: precio, moneda: moneda, id: id},
+                success: function (data) {
+                    console.log(data);
+                    if (data.Success == "True") {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: data.icon,
+                            title: data.Message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then((result) => {
+                            $('#AjaxForm').submit();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: data.icon,
+                            title: data.Message,
+                            text: data.error
+                        });
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ocurrió un Error!',
+                        text: errorThrown
+                    });
+                }
+            });
+        }
+
+        function onBeginSubmit() {
+            $("#preloader").fadeIn(5);
+        }
+
+        function onCompleteSubmit() {
+            $("#preloader").fadeOut("slow");
+            reloadDatatableNoOrder();
+        }
+
+        function onFailureResult() { }
+        function onSuccessResult() { }
+
+        function actualizarPorcentaje() {
+            Swal.fire({
+                title: 'Ingresar el porcentaje (%) para actualizar',
+                text: 'Recordar que se actualizarán TODOS los precios que se listaron',
+                input: 'text',
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                showLoaderOnConfirm: true,
+
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var resultado = result.value.replace(",", ".");
+                    if (!isNumeric(resultado)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Debe ingresar un precio válido!'
+                        });
+                    } else {
+                        actualizarPrecioPorcentaje(resultado);
+                    }
+                }
+            });
+        }
+
+        function getPrecioListaIds() {
+            var idPrecios = [];
+            $("#tablaPrecios").find('tr').each(function (i, k) {
+                var $tds = $(this).find('td'),
+                    PrecioListaId = $tds.eq(0).text().trim();
+                if (PrecioListaId != "") {
+                    idPrecios.push(PrecioListaId);
+                }
+            });
+            return idPrecios;
+        }
+
+        function actualizarPrecioPorcentaje(porcentaje) {
+            var PrecioListaIds = getPrecioListaIds();
+            console.log(PrecioListaIds);
+            $.ajax({
+                url: "@(Url.Action("ActualizarPrecioPorcentaje", "Precios"))",
+                type: "POST",
+                beforeSend: function () {
+                    $("#preloader").fadeIn(5);
+                },
+                complete: function () {
+                    $("#preloader").fadeOut("slow");
+                },
+                data: { porcentaje: porcentaje, precioListaIds: PrecioListaIds},
+                success: function (data) {
+                    console.log(data);
+                    if (data.Success == "True") {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: data.icon,
+                            title: data.Message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then((result) => {
+                            $('#AjaxForm').submit();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: data.icon,
+                            title: data.Message,
+                            text: data.error
+                        });
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ocurrió un Error!',
+                        text: errorThrown
+                    });
+                }
+            });
+        }
+
+        function imprimirEtiquetas() {
+            var PrecioListaIds = getPrecioListaIds();
+            Swal.fire({
+                title: 'Impresión de etiquetas de precios',
+                text: 'Recordar que se imprimirán TODOS los precios que se listaron',
+                showCancelButton: true,
+                confirmButtonText: 'Imprimir',
+                showLoaderOnConfirm: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var win = window.open("@(Url.Action("ImprimirEtiquetas", "Precios"))" + "?ids=" + PrecioListaIds, '_blank');
+                    if (win) {
+                        //Browser has allowed it to be opened
+                        win.focus();
+                    } else {
+                        //Browser has blocked it
+                        alert('Por favor habilite notificaciones en la página web');
+                    }
+                }
+            });
+        }
+
+    </script>
+
+}

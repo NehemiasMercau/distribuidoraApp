@@ -1,0 +1,61 @@
+﻿@model IEnumerable<Negocio.entidades.StockDeposito>
+
+
+<table id="tablaProductos" class="table table-striped table-bordered datatableNoOrder" data-excel="true">
+    <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Codigo
+            </th>
+            <th>
+                Nombre
+            </th>
+            <th>
+                Cantidad
+            </th>
+            <th>
+                Reservado
+            </th>
+            <th>
+                Disponible
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.StockDepositoId)</td>
+                <td>@Html.DisplayFor(modelItem => item.Producto.Codigo)</td>
+                <td>@Html.DisplayFor(modelItem => item.Producto.Nombre)</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cantidad)
+                </td>
+
+                @{
+                    decimal resultado = (decimal)item.Cantidad - (decimal)item.CantidadUsada;
+
+                    string cantidadReservada = resultado.ToString();
+                }
+                <td>
+                    @cantidadReservada
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CantidadUsada)
+                </td>
+                <td>
+                    <button id="btnModificar" onclick="modificarStock(this)" data-id="@item.StockDepositoId" class="btn btn-sm btn-outline-primary">Modificar Stock</button>
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+

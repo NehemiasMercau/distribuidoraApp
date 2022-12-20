@@ -1,0 +1,97 @@
+﻿@model Negocio.entidades.Producto
+
+
+<div class="card mb-3" style="width: 100%;">
+    <div class="card-header text-center text-dark">
+        <h3>Detalles del Producto</h3>
+    </div>
+    <div class="card-body text-dark text-center ">
+        <h5 class="card-title">Producto: @ViewBag.Producto</h5>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        Campo
+                    </th>
+                    <th>
+                        Valor
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.Nombre)</td>
+                    <td>
+                        @Html.DisplayFor(model => model.Nombre)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Precio de Costo
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(model => model.PrecioCosto)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayNameFor(model => model.FechaAlta)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(model => model.FechaAlta)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Fecha de Modificación
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(model => model.FechaModificacion)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Mínimo
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(model => model.Minimo)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Marca
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(model => model.Marca.Nombre)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Tipo de Duración
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(model => model.TipoDuracion.Nombre)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Rubro
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(model => model.TipoProducto.Nombre)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+    </div>
+</div>
+

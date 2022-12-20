@@ -1,0 +1,106 @@
+﻿@model Negocio.entidades.Remito
+@using Negocio.entidades
+@{
+    ViewBag.Title = "Edit";
+    Venta oVenta = (Venta)ViewBag.Venta;
+}
+<div class="row">
+    <div class="col-md-8">
+        <h2>Editar Remito</h2>
+    </div>
+    <div class="col-md-4">
+        <div>
+            @Html.ActionLink("Volver al listado", "Index", null, new { @class = "btn btn-warning pull-right" })
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.RemitoId)
+        @Html.HiddenFor(model => model.FechaCreacion)
+        @Html.HiddenFor(model => model.UsuarioId)
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClienteId, "Cliente", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("ClienteId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control", @required = "required" })
+                @Html.ValidationMessageFor(model => model.ClienteId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @if (ViewBag.Venta == null)
+        {
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.VentaId, "Pedido", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("VentaId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control", @required = "required" })
+                    @Html.ValidationMessageFor(model => model.VentaId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        else
+        {
+            @Html.Hidden("VentaId", (int)ViewBag.VentaId)
+            <div class="card">
+                <div class="card-header">
+                    Datos del pedido
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Pedido: @oVenta.VentaId</h5>
+                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                    <a href="#" class="btn btn-primary">Ver Pedido</a>
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TransportistaId, "Transportista", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("TransportistaId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control", @required = "required" })
+                @Html.ValidationMessageFor(model => model.TransportistaId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Fecha, new { htmlAttributes = new { @class = "form-control datepicker1", @required = "required" } })
+                @Html.ValidationMessageFor(model => model.Fecha, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Observaciones, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Observaciones, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Observaciones, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Editar Remito" class="btn btn-outline-success submit" />
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts{
+    <script type="text/javascript">
+        $('.datepicker1').datepicker({
+            format: "mm/dd/yyyy",
+            language: 'es',
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            autoclose: true
+        });
+    </script>
+}
+

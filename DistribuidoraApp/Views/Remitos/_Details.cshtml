@@ -1,0 +1,112 @@
+﻿@model Negocio.entidades.Remito
+@using Negocio.entidades
+@{ 
+    AspNetUsers aspNetUsers = Model.UsuarioReferencia.AspNetUsers.FirstOrDefault();
+}
+
+<div class="card mb-3" style="width: 100%;">
+    <div class="card-header text-center text-dark">
+        <h3>Detalles del Remito Nº @Model.RemitoId</h3>
+    </div>
+    <div class="card-body text-dark text-center ">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        Campo
+                    </th>
+                    <th>
+                        Valor
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Transportista</td>
+                    <td>
+                        @Html.DisplayFor(model => model.Transportista.Nombre)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Pedido
+                    </td>
+
+                    <td>
+                        @{
+                            var s = Model.VentaId.ToString() + " - $" + Model.Venta.Final.ToString() + " - " + Model.Venta.Fecha.ToString();
+                        }
+                        @Html.DisplayFor(model => s)
+                    </td>
+                </tr>
+                <tr>
+                    @if (Model.Cliente != null)
+                    {
+                    <tr>
+                        <td>
+                            Cliente
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(model => model.Cliente.RazonSocial)
+                        </td>
+                    </tr>
+                }
+                    @if (Model.Domicilio != null)
+                    {
+                        <tr>
+                            <td>
+                                Domicilio
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(model => model.Domicilio)
+                            </td>
+                        </tr>
+                    }
+                    @if (Model.Observaciones != null)
+                    {
+                        <tr>
+                            <td>
+                                Observaciones
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(model => model.Observaciones)
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td>
+                            Fecha Remito
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(model => model.Fecha)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Fecha Creación
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(model => model.FechaCreacion)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Usuario Creó
+                        </td>
+
+                        <td>
+                            @Html.Raw(aspNetUsers.UserName)
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+

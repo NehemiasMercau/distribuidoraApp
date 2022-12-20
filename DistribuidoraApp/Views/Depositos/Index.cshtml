@@ -1,0 +1,72 @@
+﻿@model IEnumerable<Negocio.entidades.Deposito>
+
+@{
+    ViewBag.Title = "Listado de Depósitos";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Listado de Depósitos</h2>
+        <hr />
+        <p>
+            @Html.ActionLink("Crear Nuevo Depósitos", "Create", null, new { @class = "btn btn-outline btn-primary pull-left" })
+            @Html.ActionLink("Volver al Inicio", "Index", "Home", null, new { @class = "btn btn-outline btn-warning pull-right" })
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-striped table-bordered datatable" data-excel="true" data-pdf="true" data-imprimir="true">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Nombre)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Direccion)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Activo)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Sucursal.Nombre)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Direccion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Activo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Sucursal.Nombre)
+                        </td>
+                        <td>
+                            <a href="@(Url.Action("Edit", new { id = item.DepositoId }))" class="btn btn-sm btn-success" title="Editar Depósito"><i class="fas fa-edit"></i></a>
+                            <button class="btn btn-sm btn-primary"
+                                    data-toggle="modal"
+                                    data-backdrop="true"
+                                    data-target="#modalDatos"
+                                    data-url="@(Url.Action("Details",new { id=item.DepositoId }))"
+                                    onclick="abrirModal(this)"
+                                    title="Ver + Info">
+                                <i class="far fa-eye"></i>
+                            </button>
+                            <a href="@(Url.Action("Delete", new { id = item.DepositoId }))" class="btn btn-sm btn-danger" title="Eliminar Depósito"><i class="far fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

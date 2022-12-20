@@ -1,0 +1,418 @@
+﻿@model Negocio.entidades.NotaCredito
+@using DistribuidoraAPI.Models
+@using Negocio.entidades;
+@using Negocio.enumeradores;
+
+@{
+    ViewBag.Title = "Nueva Nota de Crédito";
+    List<ProductoListViewModel> list = (List<ProductoListViewModel>)ViewBag.listProductoListViewModel;
+    Venta oVenta = ViewBag.oVenta;
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <p>
+                    @Html.ActionLink("Volver al Listado", "Index", null, new { @class = "btn btn-outline btn-warning pull-right" })
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<hr />
+@using (Html.BeginForm("Create", "NotaCreditos", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    HtmlHelper.UnobtrusiveJavaScriptEnabled = false;
+    @Html.HiddenFor(model => model.VentaId)
+    @Html.HiddenFor(model => model.ClienteId)
+    @Html.HiddenFor(model => model.RemitoId)
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-info text-center">
+                <h4 class="alert-heading"><strong>Crear Nota de Crédito</strong></h4>
+                <hr />
+                <div class="row">
+                    <div class="col-sm-8">
+                        <h5>Detalle de la Venta: </h5>
+                        <p>@ViewBag.DatosVenta</p>
+                    </div>
+                    <div class="col-sm-4">
+                        <h5>Cliente: </h5>
+                        <p>@ViewBag.DatosCliente</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-7">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Descripción
+                                </th>
+                                <th>
+                                    Cantidad
+                                </th>
+                                <th>
+                                    Precio
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in list)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Nombre)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Cantidad)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Precio)
+                                    </td>
+                                    <td>
+                                        @{
+                                            var producto = item.ProductoId;
+                                            var cantidad = item.Cantidad;
+                                            var nombre = item.Nombre;
+                                            var precio = item.Precio;
+                                            var codigo = item.Codigo;
+                                        }
+                                        <input type="button" class="btn btn-sm btn-info" onclick="ingresarCantidad('@codigo', '@cantidad', '@nombre', '@precio')" value="Agregar" />
+
+                                    </td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="row">
+                <div class="col-md-12">
+                    <table id="tablaAgregados" class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Id
+                                </th>
+                                <th>
+                                    Descripción
+                                </th>
+                                <th>
+                                    Cantidad
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="lblTotal" class="col-sm-4 col-form-label font-weight-bold">Total Descontado.</label>
+        @*@if (oVenta.EstadoId != (int)Negocio.enumeradores.EstadoE.Completada)
+            {
+                @Html.Hidden("Reponer", false)
+
+            }
+            else
+            {*@
+        @Html.CheckBox("Reponer", false)
+        <label class="form-check-label" for="Reponer">Reponer Stock (se repondrá el stock de los productos que agregó a la N.C.)</label>
+        @*}*@
+
+
+        <div class="col-sm-8">
+            @*@if (valuePassedIn != null)
+                {
+                    <label>$@valuePassedIn.Final</label>
+                }
+                else
+                {*@
+            <label id="lblTotal" name="Total" class="col-form-label"></label>
+            <input type="hidden" name="Total" id="inputTotal" />
+            @*}*@
+
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group ">
+                <div class="col-md-12 ">
+                    @*<input type="button" onclick="getListasPromo()" id="btnPromociones" value="Calcular Promociones" class="btn btn-outline-primary btn-block" />
+                        <hr />
+                        <div id="alertaPromos">
+                        </div>*@
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Observaciones, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Observaciones, new { htmlAttributes = new { @class = "form-control " } })
+                            @Html.ValidationMessageFor(model => model.Observaciones, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <input type="submit" btn="btnCrearVenta" value="Crear Nota de Crédito" class="btn btn-outline-success btn-block btnCrear" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+@section scripts{
+
+    <script type="text/javascript">
+
+        function validateTableCount() {
+            var table = document.getElementById("tablaAgregados");
+            var tbodyRowCount = table.tBodies[0].rows.length;
+            console.log(tbodyRowCount);
+            return tbodyRowCount;
+            //if (tbodyRowCount > 0) {
+
+            //}
+        }
+
+        function quitarProducto(productoId) {
+            $("#tablaAgregados").find('tr').each(function (i, k) {
+                var $tds = $(this).find('td'),
+                    ProductId = $tds.eq(0).text().trim();
+                console.log(ProductId);
+                if (ProductId === productoId.toString()) {
+                    $(this).remove();
+                }
+            });
+            validateTableCount();
+            sumatoriaValores();
+        }
+
+
+        function getProducto(productoId) {
+            $("#tablaAgregados").find('tr').each(function (i, k) {
+                var $tds = $(this).find('td'),
+                    ProductId = $tds.eq(0).text().trim()
+                if (ProductId === productoId) {
+                    $(this).remove();
+
+                }
+            });
+        }
+
+        function validar(productoId) {
+            getProducto(productoId);
+        }
+
+        function ingresarCantidad(codigo, cantidad, nombre, precio) {
+            console.log(precio);
+            Swal.fire({
+                title: '<h3>' + nombre + '</h3> </br> Ingresar la cantidad:',
+                input: 'text',
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if (!isNumeric(result.value)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Debe ingresar una cantidad válida!'
+                        });
+                    } else {
+                        console.log(result.value);
+                        console.log(cantidad);
+                        if (parseFloat(result.value) <= parseFloat(cantidad)) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Ítem Agregado'
+                            });
+                            validar(codigo);
+                            var count = validateTableCount();
+                            var botonQuitar = '<input type="button" class="btn btn-sm btn-danger" onclick="quitarProducto(' + codigo + ')" value="Quitar" />';
+                            var inputCodigo = '<input name="[' + count + '].Codigo" type="hidden" value="' + codigo + '" >';
+                            var inputCantidad = '<input name="[' + count + '].Cantidad" type="hidden" value="' + result.value + '" >';
+                            var inputPrecio = '<input name="[' + count + '].Precio" type="hidden" value="' + precio + '" >';
+                            var inputs = inputCodigo + inputCantidad + inputPrecio;
+                            var fila = '<tr><td>' + codigo + '</td><td>' + nombre + '</td><td>' + result.value + '</td><td>' + precio + '</td><td>' + botonQuitar + '</td>' + inputs + '</tr>';
+                            $('#tBody').append(fila);
+                            sumatoriaValores();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Debe ingresar una cantidad igual o menor a ' + cantidad
+                            });
+                        }
+                    }
+                }
+            });
+            validateTableCount();
+
+        }
+
+        function getProductos() {
+            var idProductos = [];
+            $("#tablaAgregados").find('tr').each(function (i, k) {
+                var $tds = $(this).find('td'),
+                    ProductId = $tds.eq(0).text().trim();
+                if (ProductId != "") {
+                    idProductos.push(ProductId);
+                }
+            });
+            return idProductos;
+        }
+
+        function getCantidadesPromocion() {
+            var cantidadesPromo = [];
+            $("#tablaAgregados").find('tr').each(function (i, k) {
+                var $tds = $(this).find('td'),
+                    ProductId = $tds.eq(0).text().trim();
+                if (ProductId != "") {
+                    cantidadesPromo.push(0);
+                }
+            });
+            return cantidadesPromo;
+        }
+
+        function getCantidades() {
+            var totales = [];
+            $("#tablaAgregados").find('tr').each(function (i, k) {
+                var $tds = $(this).find('td'),
+                    Cantidad = $tds.eq(2).text().trim()
+                if (Cantidad != "") {
+                    totales.push(Cantidad);
+                }
+
+            });
+            return totales;
+        }
+
+        function calcularPromociones(ListaId) {
+             if (ListaId === undefined) {
+                ListaId = 0;
+            }
+            var productos = getProductos();
+            var cantidades = getCantidades();
+            var cantidadesPromo = getCantidadesPromocion();
+            var ventaId = @Model.VentaId;
+            console.log(ventaId);
+            console.log(productos);
+            console.log(cantidades);
+
+            $.ajax({
+                url: "@(Url.Action("CalcularPromociones", "NotaCreditos"))",
+                type: "POST",
+                beforeSend: function () {
+                    $("#preloader").fadeIn(5);
+                },
+                complete: function () {
+                    $("#preloader").fadeOut("slow");
+                },
+                data: {
+                    productos: productos, cantidades: cantidades, cantidadesPromo: cantidadesPromo, ventaId: ventaId, listaPromo: ListaId
+                },
+                success: function (data) {
+                    $("#alertaPromos").html(data);
+                    $(".btnCrear").removeAttr("hidden");
+                    $(".btnPromociones").attr("hidden", "hidden");
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ocurrió un Error!',
+                        text: errorThrown
+                    });
+                }
+            });
+
+
+        }
+
+        function sumatoriaValores() {
+            var total = parseFloat(0).toFixed(2);
+            var table = document.getElementById("tablaAgregados");
+            var tbodyRowCount = table.tBodies[0].rows.length;
+            if (tbodyRowCount > 0) {
+                $("#tablaAgregados").find('tr').each(function (i, k) {
+                    var $tds = $(this).find('td'),
+                        ProductId = $tds.eq(0).text().trim(),
+                        Precio = $tds.eq(3).text().trim(),
+                        Cantidad = $tds.eq(2).text().trim()
+
+                    if (ProductId != "") {
+                        if (Cantidad === "") { Cantidad = 0; }
+                        var PrecioF = parseFloat(Precio.replace(",",".")).toFixed(2);
+                        console.log(PrecioF);
+                        var CantidadF = parseFloat(Cantidad).toFixed(2);
+                        var multi = (PrecioF * CantidadF);
+                        console.log(multi);
+                        console.log("multi");
+                        var result = (parseFloat(total) + parseFloat(multi)).toFixed(2);
+                        total = result;
+                        if (!isNaN(parseFloat(result))) {
+                            document.getElementById('lblTotal').innerHTML = result;
+                            document.getElementById('inputTotal').value = result.toString().replace(".", ",");;
+                        }
+                    }
+                });
+            } else {
+                document.getElementById('lblTotal').innerHTML = "0";
+                document.getElementById('inputTotal').value = "0";
+            }
+        }
+
+         function getListasPromo() {
+            $.ajax({
+                url: "@(Url.Action("GetListas", "Listas"))",
+                type: "GET",
+                success: function (data) {
+                    console.log(data);
+                    var json = JSON.parse(data);
+                    seleccionarListasPromos(json);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ocurrió un Error! No se pudo obtener las listas',
+                        text: errorThrown
+                    });
+                }
+            });
+        }
+
+        function seleccionarListasPromos(listas) {
+
+            Swal.fire({
+                title: 'Seleccionar la Lista para calcular las Promociones',
+                input: 'select',
+                inputOptions: listas,
+                showCancelButton: true
+            }).then((result) => {
+                if (result.value) {
+                    calcularPromociones(result.value);
+                }
+            })
+        }
+
+    </script>
+
+}

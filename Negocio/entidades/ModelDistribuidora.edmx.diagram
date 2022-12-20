@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="fab18f092cc44eabb6151895628d079c" Name="Diagram1" ZoomLevel="55">
+        <EntityTypeShape EntityType="DistribuidoraDBModel.C__MigrationHistory" Width="1.5" PointX="13.75" PointY="9.625" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.ActualizacionStock" Width="1.5" PointX="6" PointY="6.5" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Anio" Width="1.5" PointX="13.75" PointY="12.625" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.ArqueoVenta" Width="1.5" PointX="5.25" PointY="12.875" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.AspNetRoles" Width="1.5" PointX="13.75" PointY="2.75" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.AspNetUserClaims" Width="1.5" PointX="11.25" PointY="9.75" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.AspNetUserLogins" Width="1.5" PointX="11.25" PointY="2.5" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.AspNetUserRoles" Width="1.5" PointX="16" PointY="2.75" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.ComboProducto" Width="1.5" PointX="13.25" PointY="17.75" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.CondicionIVA" Width="1.5" PointX="1.5" PointY="2.5" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Deposito" Width="1.5" PointX="3" PointY="25.25" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Marca" Width="1.5" PointX="3.75" PointY="34.25" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Perfil" Width="1.5" PointX="6.75" PointY="36" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.PerfilUsuario" Width="1.5" PointX="12" PointY="5.875" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.PersonaTipo" Width="1.5" PointX="1.5" PointY="6" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.PrecioLista" Width="1.5" PointX="11.25" PointY="13" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Sucursal" Width="1.5" PointX="0.75" PointY="15.75" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.SucursalUsuario" Width="1.5" PointX="6" PointY="15.875" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.sysdiagrams" Width="1.5" PointX="14.75" PointY="5.625" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Ticket" Width="1.5" PointX="8.25" PointY="15.75" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.TipoCobro" Width="1.5" PointX="0.75" PointY="23.625" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.TipoDuracion" Width="1.5" PointX="3.75" PointY="29.125" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.TipoProducto" Width="1.5" PointX="3.75" PointY="31.625" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.TipoStock" Width="1.5" PointX="3" PointY="37.625" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.TipoVenta" Width="1.5" PointX="0.75" PointY="26.125" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Deposito_Sucursal" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_PerfilUsuario_Perfil" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_SucursalUsuario_Sucursal" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Moneda" Width="1.5" PointX="0.75" PointY="19.75" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_PrecioLista_Moneda" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Combo" Width="1.5" PointX="0.75" PointY="12" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_ComboProducto_Combo" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_PrecioLista_Combo" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Lista" Width="1.5" PointX="4.375" PointY="1" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_PrecioLista_Lista" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.StockDeposito" Width="1.5" PointX="5.25" PointY="24" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_StockDeposito_Combo" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_StockDeposito_Deposito" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_StockDeposito_TipoStock" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Estado" Width="1.5" PointX="7.375" PointY="9.875" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Egreso" Width="1.5" PointX="5.25" PointY="42.5" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Ingreso" Width="1.5" PointX="5.25" PointY="39.625" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.VentaDetalle" Width="1.5" PointX="20.875" PointY="11.75" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_VentaDetalle_Combo" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_VentaDetalle_Lista" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_VentaDetalle_Moneda" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.AspNetUsers" Width="1.5" PointX="13" PointY="21.125" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_AspNetUsers_Perfil" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_AspNetUsers_Sucursal" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Cliente" Width="1.5" PointX="6.75" PointY="1" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Cliente_CondicionIVA" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Cliente_PersonaTipo" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Ticket_Cliente" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Factura" Width="1.5" PointX="17.875" PointY="17.5" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Arqueo" Width="1.5" PointX="1" PointY="29" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.ArqueoTipo" Width="1.5" PointX="1" PointY="40.875" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Arqueo_ArqueoTipo" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_ArqueoVenta_Arqueo" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Egreso_Arqueo" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Ingreso_Arqueo" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Dolar" Width="1.5" PointX="0.75" PointY="8.75" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.NotaCreditoDetalle" Width="1.5" PointX="23.375" PointY="13.125" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_NotaCreditoDetalle_Combo" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Remito" Width="1.5" PointX="18.625" PointY="11.625" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Remito_Cliente" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Transportista" Width="1.5" PointX="18.375" PointY="1" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Remito_Transportista" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.NotaCredito" Width="1.5" PointX="20.875" PointY="6.375" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_NotaCredito_Cliente" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_NotaCredito_Remito" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_NotaCreditoDetalle_NotaCredito" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Producto" Width="1.5" PointX="22.625" PointY="25.25" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_ComboProducto_Producto" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Producto_Marca" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_NotaCreditoDetalle_Producto" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_PrecioLista_Producto" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Producto_TipoDuracion" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Producto_TipoProducto" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_StockDeposito_Producto" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_VentaDetalle_Producto" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Proveedor" Width="1.5" PointX="20.375" PointY="26.5" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Producto_Proveedor" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.UsuarioReferencia" Width="1.5" PointX="3.75" PointY="16.625" />
+        <EntityTypeShape EntityType="DistribuidoraDBModel.Venta" Width="1.5" PointX="10.625" PointY="17.875" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_ActualizacionStock_UsuarioReferencia" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Venta_Arqueo" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_ArqueoVenta_Venta" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_AspNetUsers_UsuarioReferencia" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Venta_Cliente" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Venta_Estado" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Factura_Venta" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_NotaCredito_UsuarioReferencia" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_NotaCredito_Venta" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_PerfilUsuario_UsuarioReferencia" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Remito_UsuarioReferencia" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Remito_Venta" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Venta_Sucursal" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_SucursalUsuario_UsuarioReferencia" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Ticket_Venta" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Venta_TipoCobro" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Venta_TipoVenta" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Venta_UsuarioReferencia" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_Venta_UsuarioReferencia1" />
+        <AssociationConnector Association="DistribuidoraDBModel.FK_VentaDetalle_Venta" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

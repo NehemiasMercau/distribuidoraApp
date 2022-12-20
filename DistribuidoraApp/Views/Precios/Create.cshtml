@@ -1,0 +1,219 @@
+﻿@model DistribuidoraAPI.Models.PrecioListaViewModel
+
+@{
+    ViewBag.Title = "AltaPrecios";
+}
+
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script src="~/Scripts/modernizr-2.8.3.js"></script>
+<script src="~/Scripts/script-custom-validator.js"></script>
+
+
+
+<div class="row">
+    <div class="col-md-8">
+        @if (ViewBag.Producto != null)
+        {
+            <h3>Precios del Producto: @ViewBag.Producto</h3>
+        }
+        else
+        {
+            <h3>Precios del Combo: @ViewBag.Combo</h3>
+        }
+    </div>
+    <div class="col-md-4">
+        <div>
+            @if (ViewBag.Producto != null)
+            {
+                @Html.ActionLink("Volver al listado", "Index", "Productos", null, new { @class = "btn btn-warning pull-right" })
+            }
+            else
+            {
+                @Html.ActionLink("Volver al listado", "Index", "Combos", null, new { @class = "btn btn-warning pull-right" })
+            }
+
+        </div>
+    </div>
+</div>
+<br />
+
+@if (Model.listPrecioLista.Count() > 0)
+{
+    <div class="row">
+        @foreach (var item in Model.listPrecioLista)
+        {
+            <div class="col-md-3">
+                @Html.Partial("_Create", item)
+            </div>
+        }
+    </div>
+}
+
+@section scripts{
+
+    <script type="text/javascript">
+        $(document).on('click', '.generador', function () {
+            console.log("click");
+            var idAttr = $(this).attr('id');
+            var idParam = idAttr.replace('btnGenerar', '');
+            var radioARS = $('#radioARS' + idParam + ':checked').val();
+            var radioUSD = $('#radioUSD' + idParam + ':checked').val();
+            var Moneda;
+            if (radioARS != null) { Moneda = 1; }
+            if (radioUSD != null) { Moneda = 2; }
+            console.log(Moneda);
+            if (Moneda == undefined) {
+                Moneda = 1;
+            }
+
+            var txtName = 'txtPrecio' + idParam;
+            var txtValor = $('#' + txtName).val();
+
+            if (Moneda != null) {
+
+                var url = "@Url.Action("Create", "Precios")";
+                var data = { id: idParam, precio: txtValor, moneda: Moneda };
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: data,
+                    type: "POST",
+                    beforeSend: function () {
+                        $("#preloader").fadeIn(5);
+                    },
+                    complete: function () {
+                        $("#preloader").fadeOut("slow");
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        $('#divResultado' + idParam).html(data);
+                        console.log(idParam);
+
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                         Swal.fire({
+                             icon: 'error',
+                             title: 'Ocurrió un Error!',
+                             text: errorThrown
+                         });
+                    }
+                });
+
+                @*$.post(url, data).done(function (data) {
+                    var urlRedirect = url;
+                    urlRedirect = urlRedirect + "?ProductoId=" + @ViewBag.ProductoId + "&ComboId=" + @ViewBag.ComboId;
+                    window.location.href = urlRedirect;
+
+                }).fail(manejarErrorAjax).always(function () {
+                });*@
+
+                //function manejarErrorAjax(err) {
+                //    console.log(err.responseText);
+                //}
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'No es posible guardar...',
+                    text: '¡Debe seleccionar una moneda!'
+                })
+
+            }
+
+        });
+
+        $(document).ready(function () {
+
+            $('.radioUSD').on('click', function () {
+                var idAttr = $(this).attr('id');
+                var idValor = idAttr.replace('radioUSD', '');
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetPrecioDolarStatic", "Precios")',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: successFunc,
+                    error: errorFunc
+                });
+
+                function successFunc(data, status) {
+                    var dolar = data.Dolar.toString();
+                    $('#lblDolar'+ idValor).text('U$D: ' + dolar.trim().replace(".", ","));
+                    //$('#lblDolar' + idValor).text('U$D: ' + objeto.venta);
+                    //let count = data.lenght;
+                    //var result = [];
+
+                    //for (var i in data)
+                    //    result.push(data[i].casa);
+                    //console.log(result);
+                    //for (var i = 0; i < result.length; i++) {
+                    //    let objeto = result[i];
+                    //    if (objeto.nombre === 'Dolar Oficial') {
+                    //        console.log(objeto);
+                    //        console.log('objeto');
+                    //        $('#lblDolar' + idValor).text('U$D: ' + objeto.venta);
+                    //    }
+                    //}
+                }
+
+                function errorFunc() {
+                    console.log('error');
+                }
+            });
+
+            $('.radioARS').on('click', function () {
+
+                var idAttr = $(this).attr('id');
+                var idValor = idAttr.replace('radioARS', '');
+                console.log(idAttr);
+                console.log(idValor);
+                $('#lblDolar' + idValor).text('');
+            });
+
+
+
+        });
+
+        $(document).keypress(function (e) {
+            if (e.keyCode === 13) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+    </script>
+
+
+    <script type="text/javascript">
+        function Begin() {
+            $("#preloader").fadeIn(5);
+        }
+
+        function Complete() {
+            $("#preloader").fadeOut("slow");
+        }
+
+        function Success(data) {
+            //console.log(data);
+        }
+
+        function Failure(data) {
+            console.log("Failure");
+        }
+
+
+        $(document).ready(function () {
+            $('.precio').on("keyup", function (e) {
+                if (e.keyCode == 110 || e.keyCode == 190) {
+                    var valor = $(this).val();
+                    valor = valor.replace(".", ",");
+                    $(this).val(valor);
+                }
+            });
+
+        });
+
+
+    </script>
+
+}

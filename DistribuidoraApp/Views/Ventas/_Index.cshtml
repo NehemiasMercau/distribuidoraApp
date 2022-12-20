@@ -1,0 +1,144 @@
+﻿@model IEnumerable<Negocio.entidades.Venta>
+
+<hr />
+@if (ViewBag.TotalPreventista != null)
+{
+    <div id="divPreventista">
+        <button onclick="calularComision(@ViewBag.TotalPreventista)" class="btn btn-outline-info">Calcular Comisión Preventista</button>
+        <hr />
+    </div>
+}
+@if (Model.Count() > 0)
+{
+    <table class="table table-striped table-bordered datatable" data-excel="true" data-pdf="true" data-imprimir="true">
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Estado
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Total)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Final)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Fecha)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Pendiente)
+                </th>
+                <th>
+                    Tipo
+                </th>
+                <th>
+                    Usuario
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var color = "";
+                int EstadoId = (int)item.EstadoId;
+                if (EstadoId == (int)Negocio.enumeradores.EstadoE.Completada)
+                {
+                    color = "#2abd2a";
+                }
+                <tr style="color:@color">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.VentaId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Estado.Nombre)
+                    </td>
+                    <td>
+                        @{ string total = item.Total.ToString().Replace(",", ".");
+                        }
+                        $@total
+                        @*$@Html.DisplayFor(modelItem => item.Total)*@
+                    </td>
+                    <td>
+                        @{ string final = item.Final.ToString().Replace(",", ".");
+                        }
+                        $@final
+                        @*$@Html.DisplayFor(modelItem => item.Final)*@
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Fecha)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Pendiente)
+                    </td>
+                    <td>
+                        @{
+                            string tipoVenta = "";
+                        }
+                        @if (item.PreventistaId != null)
+                        {
+                            tipoVenta = item.TipoVenta.Nombre + "(" + item.UsuarioReferencia1.AspNetUsers.FirstOrDefault().Apellido + ")";
+
+                        }
+                        else
+                        {
+                            tipoVenta = item.TipoVenta.Nombre;
+                        }
+                        @Html.Raw(tipoVenta)
+                    </td>
+                    <td>
+                        @{
+                            var usuario = item.UsuarioReferencia.AspNetUsers.FirstOrDefault().Apellido;
+                        }
+                        @Html.Raw(usuario)
+                    </td>
+                    <td>
+                        @*<a href="@(Url.Action("Edit", new { id = item.VentaId }))" class="btn btn-sm btn-success" title="Editar Venta"><i class="fas fa-edit"></i></a>*@
+                        <button class="btn btn-sm btn-primary"
+                                data-toggle="modal"
+                                data-backdrop="true"
+                                data-target="#modalDatos"
+                                data-url="@(Url.Action("Details",new { id=item.VentaId }))"
+                                onclick="abrirModal(this)"
+                                title="Ver + Info">
+                            <i class="far fa-eye"></i>
+                        </button>
+                        @* <a href="@(Url.Action("Delete", new { id = item.VentaId }))" class="btn btn-sm btn-danger" title="Eliminar Venta"><i class="fas fa-trash-alt"></i></a>*@
+                        <a href="@(Url.Action("Index", "VentaDetalles", new { VentaId = item.VentaId }))" class="btn btn-sm btn-info" title="Ver Detalle"><i class="fas fa-list"></i></a>
+                        <button class="btn btn-sm btn-primary"
+                                data-toggle="modal"
+                                data-backdrop="true"
+                                data-target="#modalDatos"
+                                data-url="@(Url.Action("Estado",new { id=item.VentaId }))"
+                                onclick="abrirModal(this)"
+                                title="Acciones">
+                            <i class="fas fa-exchange-alt"></i>
+                        </button>
+                        @if (item.Factura.Where(x => x.Realizada == true).Count() > 0)
+                        {
+                            <a href="@(Url.Action("GetVenta", "Facturas", new { id = item.VentaId }))" class="btn btn-sm btn-warning" target="_blank" title="Ver Factura"><i class="fas fa-file-pdf"></i></a>
+                        }
+                        else
+                        {
+                            <a href="#" onclick="mensajeSinFactura()" class="btn btn-sm btn-danger" title="Sin Factura"><i class="fas fa-file-pdf"></i></a>
+                        }
+                        <a href="@(Url.Action("ReportePedido", "Ventas", new { id = item.VentaId }))" class="btn btn-sm btn-success" target="_blank" title="Ver Pedido"><i class="fas fa-file-archive"></i></a>
+                        <a href="@(Url.Action("Index", "Remitos", new { VentaId = item.VentaId }))" class="btn btn-sm btn-info" target="_blank" title="Ver Remitos"><i class="fas fa-registered"></i></a>
+                        <a href="@(Url.Action("ReporteResumen", "Ventas", new { VentaId = item.VentaId }))" class="btn btn-sm btn-outline-warning" target="_blank" title="Ver Comanda"><i class="fas fa-list"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+else
+{
+    <div class="alert alert-danger">
+        <p>No existen registros.</p>
+    </div>
+}
+

@@ -1,0 +1,61 @@
+﻿@model Negocio.entidades.Lista
+
+
+<div>
+    <h4>Lista</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Descripcion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RecargoGeneral)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RecargoGeneral)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RecargoImporte)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RecargoImporte)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Fecha)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Fecha)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Activo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Activo)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ListaId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

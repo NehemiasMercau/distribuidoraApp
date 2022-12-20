@@ -1,0 +1,24 @@
+venta preventistas, y ventas minoristas
+venta con tarjetas siempre emiten factura
+venta minorista, emite comanda, ticket.
+
+Productos.. venta por gramos, litros, metros, etc...
+
+Clientes: mas de un domicilio.
+
+
+Arqueo:
+Caja inicial, retiros, PAGOS (con perfil que diferencie)..
+Tipo de pago.. 
+Listas de precio.
+
+NOta de credito a clientes y nota de credito a proveedores.
+Calculo de ventas que hacen los preventistas.
+1 remito por pedido.. el remito puede tener una nota de credito POR PRODUCTOS.
+estados del pedido!!!
+
+Limites de horarios para ingresar.
+
+Cuenta corriente.. 
+PAGARE EN PARTE INFERIOR DEL REMITO
+Pagare asociado al remito a la hora de volver de la distribucion.

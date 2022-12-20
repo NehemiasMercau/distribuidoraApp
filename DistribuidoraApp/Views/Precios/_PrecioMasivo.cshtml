@@ -1,0 +1,66 @@
+﻿@model IEnumerable<DistribuidoraAPI.Models.PrecioMasivoViewModel>
+
+
+<table id="tablaPrecios" class="table table-striped table-bordered datatableNoOrder" data-excel="true">
+    <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Codigo
+            </th>
+            <th>
+                Nombre
+            </th>
+            <th>
+                Lista
+            </th>
+            <th>
+                Precio
+            </th>
+            <th>
+                Moneda
+            </th>
+            <th>
+                Cargado
+            </th>
+
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.PrecioListaId)</td>
+                <td>@Html.DisplayFor(modelItem => item.Codigo)</td>
+                <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
+                <td>@Html.DisplayFor(modelItem => item.Lista)</td>
+                <td>@Html.DisplayFor(modelItem => item.Precio)</td>
+                <td>@Html.DisplayFor(modelItem => item.Moneda)</td>
+                <td>
+                    @if (item.Cargado)
+                    {
+                        <i class="fas fa-check-circle" style="color:green"></i>
+                    }
+                    else
+                    {
+                        <i class="fas fa-times-circle" style="color:red"></i>
+                    }
+                </td>
+                <td>
+                    <button id="btnModificar" onclick="modificarPrecioARS(this)" data-id="@item.PrecioListaId" class="btn btn-sm btn-outline-primary">Modificar (ARS)</button>
+                </td>
+                <td>
+                    <button id="btnModificar" onclick="modificarPrecioUSD(this)" data-id="@item.PrecioListaId" class="btn btn-sm btn-outline-success">Modificar (USD)</button>
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+

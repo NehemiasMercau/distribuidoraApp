@@ -1,0 +1,375 @@
+﻿@model IEnumerable<Negocio.entidades.StockDeposito>
+@using Microsoft.AspNet.Identity;
+@using DistribuidoraAPI.Extensions;
+@{
+    ViewBag.Title = "Actualización Masiva de Stock";
+}
+
+
+<div class="row">
+    <div class="col-md-8">
+        <h3>Listado de Productos - Stock</h3>
+    </div>
+    <div class="col-md-4">
+        <div>
+            @Html.ActionLink("Volver al listado", "Index", "Home", null, new { @class = "btn btn-warning pull-right" })
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            @using (Ajax.BeginForm("AltaStockMasivaBusqueda", "Productos", null, new AjaxOptions
+            {
+                HttpMethod = "POST",
+                OnBegin = "onBeginSubmit",
+                OnComplete = "onCompleteSubmit",
+                OnFailure = "onFailureResult",
+                OnSuccess = "onSuccessResult",
+                UpdateTargetId = "divTable",
+                InsertionMode = InsertionMode.Replace
+            }, new { id = "AjaxForm" }))
+            {
+                <div class="card-header">Filtros</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.Label("Proveedor", "Proveedor", htmlAttributes: new { @class = "control-label col-md-12" })
+                                <div class="col-md-12">
+                                    @Html.DropDownList("ProveedorId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.Label("Marca", "Marca", htmlAttributes: new { @class = "control-label col-md-12" })
+                                <div class="col-md-12">
+                                    @Html.DropDownList("MarcaId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.Label("Tipo Producto", "TipoProducto", htmlAttributes: new { @class = "control-label col-md-12" })
+                                <div class="col-md-12">
+                                    @Html.DropDownList("TipoProductoId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer  d-flex justify-content-center">
+                    <div class="row  d-flex justify-content-center">
+                        <input type="submit" id="btnBuscar" class="btn btn-success" value="Buscar" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-8">
+        <div id="divPreventista">
+            <button onclick="modificarStockGeneral()" class="btn btn-outline-info">Actualizar todo el stock</button>
+
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <div class="table-responsive" id="divTable">
+            @Html.Partial("_AltaStockMasiva", Model)
+        </div>
+
+    </div>
+</div>
+
+@*<hr />*@
+<!-- Begin Page Content -->
+<!--<div class="container-fluid">-->
+
+    <!-- Page Heading -->
+    <!--<h1 class="h3 mb-2 text-gray-800">Gráficos</h1>-->
+
+    <!-- Content Row -->
+    <!--<div class="row">
+
+        <div class="col-xl-8 col-lg-7">-->
+
+            <!-- Area Chart -->
+            <!--<div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Area Chart</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="myAreaChart"></canvas>
+                    </div>
+                    <hr>
+                    Styling for the area chart can be found in the <code>/js/demo/chart-area-demo.js</code> file.
+                </div>
+            </div>
+
+            
+
+        </div>-->
+
+        <!-- Donut Chart -->
+        <!--<div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">-->
+                <!-- Card Header - Dropdown -->
+                <!--<div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
+                </div>-->
+                <!-- Card Body -->
+                <!--<div class="card-body">
+                    <div class="chart-pie pt-4">
+                        <canvas id="myPieChart"></canvas>
+                    </div>
+                    <hr>
+                    Styling for the donut chart can be found in the <code>/js/demo/chart-pie-demo.js</code> file.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-12 col-lg-9">-->
+            <!-- Bar Chart -->
+            <!--<div id="anycanvas" class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Ventas</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar">
+                        <canvas id="myBarChart"></canvas>
+                    </div>
+                    <hr>
+                    <p id="barChartDescri"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->
+<!-- /.container-fluid -->
+
+@section scripts{
+
+    <!-- Page level plugins -->
+    @*<script src="~/lib/admin/vendor/chart.js/Chart.min.js"></script>*@
+
+    <!-- Page level custom scripts -->
+    @*<script src="~/lib/admin/js/demo/chart-area-demo.js"></script>
+    <script src="~/lib/admin/js/demo/chart-pie-demo.js"></script>
+    <script src="~/lib/admin/js/demo/chart-bar-demo.js"></script>*@
+
+    <script type="text/javascript">
+
+        function modificarStock(e) {
+            var id = $(e).attr("data-id");
+            console.log(id);
+            Swal.fire({
+                title: 'Ingresar la cantidad a reponer',
+                input: 'text',
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                showLoaderOnConfirm: true,
+
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var resultado = result.value;
+                    if (!isNumeric(resultado)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Debe ingresar una cantidad válida!'
+                        });
+                    } else {
+                        actualizarStockUnico(resultado, id);
+                    }
+                }
+            });
+        }
+
+        function actualizarStockUnico(stock, id) {
+            $.ajax({
+                url: "@(Url.Action("ActualizarStockUnico", "Productos"))",
+                type: "POST",
+                beforeSend: function () {
+                    $("#preloader").fadeIn(5);
+                },
+                complete: function () {
+                    $("#preloader").fadeOut("slow");
+                },
+                data: { stock: stock, id: id},
+                success: function (data) {
+                    console.log(data);
+                    if (data.Success == "True") {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: data.icon,
+                            title: data.Message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then((result) => {
+                            $('#AjaxForm').submit();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: data.icon,
+                            title: data.Message,
+                            text: data.error
+                        });
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ocurrió un Error!',
+                        text: errorThrown
+                    });
+                }
+            });
+        }
+
+        function onBeginSubmit() {
+            $("#preloader").fadeIn(5);
+        }
+
+        function onCompleteSubmit() {
+            $("#preloader").fadeOut("slow");
+            reloadDatatableNoOrder();
+        }
+
+        function onFailureResult() { }
+
+        function onSuccessResult() { }
+
+        function modificarStockGeneral() {
+            Swal.fire({
+                title: 'Ingresar la cantidad a reponer',
+                text: 'Recordar que se incrementará la cantidad ingresada a TODOS los productos que se listaron',
+                input: 'text',
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                showLoaderOnConfirm: true,
+
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var resultado = result.value;
+                    if (!isNumeric(resultado)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Debe ingresar una cantidad válida!'
+                        });
+                    } else {
+                        actualizarStockGeneral(resultado);
+                    }
+                }
+            });
+        }
+
+        function getStockIds() {
+            var idStocks = [];
+            $("#tablaProductos").find('tr').each(function (i, k) {
+                var $tds = $(this).find('td'),
+                    StockId = $tds.eq(0).text().trim();
+                if (StockId != "") {
+                    idStocks.push(StockId);
+                }
+            });
+            return idStocks;
+        }
+
+        function actualizarStockGeneral(cantidadGeneral) {
+            var StockIds = getStockIds();
+            console.log(StockIds);
+            $.ajax({
+                url: "@(Url.Action("ActualizarStockGeneral", "Productos"))",
+                type: "POST",
+                beforeSend: function () {
+                    $("#preloader").fadeIn(5);
+                },
+                complete: function () {
+                    $("#preloader").fadeOut("slow");
+                },
+                data: { cantidad: cantidadGeneral, stockIds: StockIds},
+                success: function (data) {
+                    console.log(data);
+                    if (data.Success == "True") {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: data.icon,
+                            title: data.Message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then((result) => {
+                            $('#AjaxForm').submit();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: data.icon,
+                            title: data.Message,
+                            text: data.error
+                        });
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ocurrió un Error! No se pudieron obtener los clientes',
+                        text: errorThrown
+                    });
+                }
+            });
+        }
+
+    </script>
+
+
+
+    @*<script type="text/javascript">
+
+        function obtenerVentas() {
+            $.ajax({
+                url: "@(Url.Action("GetVentasChart", "Ventas"))",
+                type: "GET",
+                beforeSend: function () {
+                    $("#preloader").fadeIn(5);
+                },
+                complete: function () {
+                    $("#preloader").fadeOut("slow");
+                },
+                //data: { cantidad: cantidadGeneral, stockIds: StockIds},
+                success: function (data) {
+                    console.log(data);
+                    if (data.Success == "True") {
+                        $('#barChartDescri').html(data.descri);
+                        createBarChart(data.x, data.y, data.x.length, data.y.length, data.y[data.y.length]);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ocurrió un Error! No se pudo obtener el gráfico',
+                        text: errorThrown
+                    });
+                }
+            });
+        }
+
+
+        $(document).ready(function () {
+            obtenerVentas();
+        })
+
+
+    </script>*@
+}

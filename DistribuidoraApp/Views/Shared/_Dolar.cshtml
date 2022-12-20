@@ -1,0 +1,17 @@
+﻿
+@using Microsoft.AspNet.Identity
+@using DistribuidoraAPI.Extensions
+
+        <!-- Nav Item - User Information -->
+        <li class="nav-item no-arrow">
+            <a class="nav-link" href="#" role="button">
+                @if (Session["Dolar"] != null)
+                {
+                    <span class=" text-gray-600 small">Dólar Venta: $@Session["Dolar"].ToString()</span>
+                }
+
+                <span class="fas fa-comment-dollar"></span>
+            </a>
+
+        </li>
+

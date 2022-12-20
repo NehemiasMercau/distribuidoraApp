@@ -1,0 +1,114 @@
+﻿@model IEnumerable<Negocio.entidades.Remito>
+
+<hr />
+@if (ViewBag.TotalTransportista != null)
+{
+    <div id="divTransportista">
+        <button onclick="calularComision(@ViewBag.TotalTransportista)" class="btn btn-outline-info">Calcular Comisión Transportista</button>
+        <hr />
+    </div>
+}
+@if (Model.Count() > 0)
+{
+    <table class="table table-striped table-bordered datatable" data-excel="true" data-pdf="true" data-imprimir="true">
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Venta
+                </th>
+                <th>
+                    Cliente
+                </th>
+                <th>
+                    Transportista
+                </th>
+                <th>
+                    Fecha Creación
+                </th>
+                <th>
+                    Fecha
+                </th>
+                <th>
+                    Final Venta
+                </th>
+                <th>
+                    Usuario
+                </th>
+                <th>
+                    Observaciones
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RemitoId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VentaId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cliente.RazonSocial)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Transportista.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaCreacion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fecha)
+                </td>
+                <td>
+                    @{ string final = item.Venta.Final.ToString().Replace(",", ".");
+                    }
+                    $@final
+                </td>
+                <td>
+                    @{
+                        var usuario = item.UsuarioReferencia.AspNetUsers.FirstOrDefault().Nombre + ", " + item.UsuarioReferencia.AspNetUsers.FirstOrDefault().Apellido;
+                    }
+                    @Html.Raw(usuario)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Observaciones)
+                </td>
+                <td>
+                    <a href="@(Url.Action("Edit", new { id = item.RemitoId }))" class="btn btn-sm btn-success" title="Editar Remito"><i class="fas fa-edit"></i></a>
+                    <button class="btn btn-sm btn-primary"
+                            data-toggle="modal"
+                            data-backdrop="true"
+                            data-target="#modalDatos"
+                            data-url="@(Url.Action("Details",new { id=item.RemitoId }))"
+                            onclick="abrirModal(this)"
+                            title="Ver + Info">
+                        <i class="far fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger"
+                            onclick="eliminar(@item.RemitoId)"
+                            title="Eliminar">
+                        <i class="far fa-trash-alt"></i>
+                    </button>
+                    <a href="@(Url.Action("Index", "VentaDetalles", new { VentaId = item.VentaId }))" class="btn btn-sm btn-info" title="Ver Detalle"><i class="fas fa-list"></i></a>
+                    <a href="@(Url.Action("Create", "NotaCreditos", new { RemitoId = item.RemitoId }))" class="btn btn-sm btn-info" title="Nueva Nota Crédito"><i class="fas fa-plus"></i></a>
+                    <a href="@(Url.Action("ReportePedido", new { id = item.RemitoId }))" class="btn btn-sm btn-warning" target="_blank" title="Ver Remito"><i class="fas fa-file-pdf"></i></a>
+
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-danger">
+        <p>No existen registros.</p>
+    </div>
+}
+

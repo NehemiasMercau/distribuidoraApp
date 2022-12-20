@@ -1,0 +1,199 @@
+﻿@model IEnumerable<Negocio.entidades.StockDeposito>
+
+@{
+    ViewBag.Title = "AltaStock";
+}
+
+<style type="text/css">
+    .oculto {
+        display: none;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-8">
+
+
+        @if (ViewBag.Producto != null)
+        {
+            <h3>Listado de Stock en Depósitos del producto <strong>@ViewBag.Producto</strong></h3>
+        }
+        else
+        {
+            <h3>Listado de Stock en Depósitos del combo <strong>@ViewBag.Combo</strong></h3>
+        }
+
+
+    </div>
+    <div class="col-md-4">
+        <div>
+            @if (ViewBag.Producto != null)
+            {
+                @Html.ActionLink("Volver al listado", "Index", "Productos", null, new { @class = "btn btn-warning pull-right" })
+            }
+            else
+            {
+                @Html.ActionLink("Volver al listado", "Index", "Combos", null, new { @class = "btn btn-warning pull-right" })
+            }
+
+        </div>
+    </div>
+    <hr />
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-striped table-bordered datatable" data-excel="true" data-pdf="true" data-imprimir="true">
+            <thead>
+                <tr>
+                    <th>
+                        Depósito
+                    </th>
+                    <th>
+                        Cantidad
+                    </th>
+                    <th>
+                        Reservado
+                    </th>
+                    <th>
+                        Disponible
+                    </th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Deposito.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Cantidad)
+                        </td>
+
+                        @{
+                            decimal resultado = (decimal)item.Cantidad - (decimal)item.CantidadUsada;
+
+                            string cantidadReservada = resultado.ToString();
+                        }
+                        <td>
+                            @cantidadReservada
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CantidadUsada)
+                        </td>
+                        <td>
+                            <input value="Seleccionar" data-id="@item.DepositoId" data-cant="@item.Cantidad" data-reservado="@cantidadReservada" data-disponible="@item.CantidadUsada" data class="btn btn-sm btn-primary btnSelect" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="cardStock" class="card text-center oculto">
+    @using (Html.BeginForm("AgregarStock", "Productos", FormMethod.Post))
+    {
+        <div class="card-header">
+            Actualizar Stock
+        </div>
+        <div class="card-body form">
+            <h5 class="card-title">Ingresar la cantidad</h5>
+            @*<div class="row form">*@
+            @*<div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label col-md-10">Depósitos</label>
+                        <div class="col-md-12">
+                            @Html.DropDownList("cboDepositos", (SelectList)ViewBag.Depositos, htmlAttributes: new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>*@
+            <div class="row">
+                @Html.Hidden("cboDepositos", 1)
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="control-label col-md-10">Stock</label>
+                        <div class="col-md-12">
+                            <label id="lblCantidad" class="control-label"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="control-label col-md-10">Reservado</label>
+                        <div class="col-md-12">
+                            <label id="lblReservado" class="control-label"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="control-label col-md-10">Disponible</label>
+                        <div class="col-md-12">
+                            <label id="lblDisponible" class="control-label"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="control-label col-md-10">Agregar Stock</label>
+                        <div class="col-md-12">
+                            <input class="form-control" type="number" id="txtCantidad" name="txtCantidad" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-10">Actualizar Disp.</label>
+                        <div class="col-md-12">
+                            <input class="form-control" type="number" id="txtCantidadDisponible" name="txtCantidadDisponible" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-8 d-flex justify-content-center">
+                    <input class="btn btn-outline-success btn-block submit" type="submit" id="btnActualizar" value="Actualizar Stock" />
+                </div>
+                <div class="col-md-4 d-flex justify-content-center">
+                    <button type="button" id="btnCancelar" class="btn btn-danger btn-block">Cancelar</button>
+                </div>
+            </div>
+
+            @Html.Hidden("ProductoId", (object)ViewBag.ProductoId)
+            @Html.Hidden("ComboId", (object)ViewBag.ComboId)
+            @*</div>*@
+        </div>
+    }
+</div>
+
+@section scripts{
+
+    <script type="text/javascript">
+        $('.btnSelect').click(function () {
+            var id = $(this).data('id');
+            var cant = $(this).data('cant');
+            var reservado = $(this).data('reservado');
+            var disponible = $(this).data('disponible');
+
+            if (id != null) {
+                $('#cboDepositos').val(id);
+                $('#lblCantidad').text(cant);
+                $('#lblReservado').text(reservado);
+                $('#lblDisponible').text(disponible);
+                $('#cardStock').removeClass('oculto');
+            }
+        })
+
+        $('#btnCancelar').click(function () {
+            $('#cboDepositos').val('');
+            $('#lblCantidad').text('');
+            $('#txtCantidad').val('');
+            $('#cardStock').addClass('oculto');
+        })
+    </script>
+
+}

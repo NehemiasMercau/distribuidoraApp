@@ -1,0 +1,22 @@
+﻿@using DistribuidoraAPI.Extensions
+@{
+    ViewBag.Title = "EmailSent";
+}
+
+<div class="card border-info mb-3" style="max-width: 28rem;">
+    <div class="card-header">¡Registro Exitoso!</div>
+    <div class="card-body text-info">
+        <h5 class="card-title">Información Importante</h5>
+        <hr />
+        <p class="card-text">Se envió un Email a su correo, por favor revisar para <strong>activar su cuenta.</strong></p>
+        @if (User.Identity.IsAuthenticated)
+        {
+            if (User.Identity.GetPerfilId() == "1" || User.Identity.GetPerfilId() == "4")
+            {
+                @Html.ActionLink("Regresar al listado de Usuarios", "Index", "AspNetUsers", new { area = "" }, new { @class = "btn btn-outline-primary" })
+            }
+        }
+
+    </div>
+</div>
+

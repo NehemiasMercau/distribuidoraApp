@@ -1,0 +1,83 @@
+﻿@model Negocio.entidades.Cliente
+
+<div class="card mb-3" style="width: 100%;">
+    <div class="card-header text-center text-dark">
+        <h3>Detalles del Cliente</h3>
+    </div>
+    <div class="card-body text-dark text-center ">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        Campo
+                    </th>
+                    <th>
+                        Valor
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Razón Social</td>
+                    <td>
+                        @Html.DisplayFor(model => model.RazonSocial)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        CUIT/CUIL
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(model => model.CUIT)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayNameFor(model => model.Direccion)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(model => model.Direccion)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayNameFor(model => model.Telefono)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(model => model.Telefono)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Condición IVA
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(model => model.CondicionIVA.Nombre)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Tipo de Persona
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(model => model.PersonaTipo.Nombre)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Fecha de Alta
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(model => model.FechaAlta)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,145 @@
+﻿@model Negocio.entidades.Remito
+@using Negocio.entidades
+@{
+    ViewBag.Title = "Create";
+    Venta oVenta = (Venta)ViewBag.Venta;
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <h2>Crear Nuevo Remito</h2>
+    </div>
+    <div class="col-md-4">
+        <div>
+            @if (oVenta == null)
+            {
+                @Html.ActionLink("Volver al listado", "Index", null, new { @class = "btn btn-warning pull-right" })
+            }
+            else
+            {
+                @Html.ActionLink("Volver al listado", "Index", "Ventas", null, new { @class = "btn btn-warning pull-right" })
+            }
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div id="formRemito" class="form-horizontal form">
+
+        <hr />
+
+        @if (ViewBag.Venta == null)
+        {
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.VentaId, "Pedido", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("VentaId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control", @required = "required" })
+                    @Html.ValidationMessageFor(model => model.VentaId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    @Html.Hidden("VentaId", (int)ViewBag.VentaId)
+                    <div class="card">
+                        <div class="card-header">
+                            Datos del pedido
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Pedido: @oVenta.VentaId</h5>
+                            <p class="card-text">@ViewBag.Descripcion</p>
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+            </div>
+
+        }
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClienteId, "Cliente", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("ClienteId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control", @required = "required" })
+                @Html.ValidationMessageFor(model => model.ClienteId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TransportistaId, "Transportista", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("TransportistaId", null, "Seleccionar...", htmlAttributes: new { @class = "form-control", @required = "required" })
+                @Html.ValidationMessageFor(model => model.TransportistaId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Fecha, new { htmlAttributes = new { @class = "form-control datepicker1", @readonly = "true", @required = "required" } })
+                @Html.ValidationMessageFor(model => model.Fecha, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Observaciones, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Observaciones, new { htmlAttributes = new { @class = "form-control " } })
+                @Html.ValidationMessageFor(model => model.Observaciones, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Crear Remito" class="btn btn-outline-success submit" />
+            </div>
+        </div>
+    </div>
+}
+
+
+
+@section scripts{
+    <script src="~/Scripts/modernizr-2.8.3.js"></script>
+
+    <script type="text/javascript">
+        $('.datepicker1').datepicker({
+            format: "mm/dd/yyyy",
+            language: 'es',
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            autoclose: true
+        });
+
+        $(document).ready(function () {
+            var mensaje = '@ViewBag.RemitoCreado';
+            var mensajeTitulo = '@ViewBag.RemitoCreadoTitulo';
+            if (mensaje != '') {
+                Swal.fire({
+                    title: mensajeTitulo,
+                    text: mensaje,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sí, continuar!',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (!result.isConfirmed) {
+                         window.location = '@Url.Action("Index")';
+                    }
+                });
+            }
+        })
+
+    </script>
+
+}

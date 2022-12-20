@@ -1,0 +1,227 @@
+﻿@model DistribuidoraAPI.Models.ComboViewModel
+
+@{
+    ViewBag.Title = "Editar Combo";
+}
+
+<style type="text/css">
+    .negrita {
+        font-weight: bold
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-8">
+        <h2>Editar Combo</h2>
+    </div>
+    <div class="col-md-4">
+        <div>
+            @Html.ActionLink("Volver al listado", "Index", null, new { @class = "btn btn-warning" })
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("Edit", "Combos", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <div class="row">
+            <div class="col-md-6">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.ComboId)
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Descripcion, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                @Html.LabelFor(model => model.MultiProductos, "Productos Incluidos en el Combo", htmlAttributes: new { @class = "control-label col-md-6" })
+                <div class="form">
+                    <div class="form-row">
+                        <div class="form-group col-md-8">
+                            <div class="col-md-12">
+                                @Html.DropDownList("Productos", (SelectList)ViewBag.Productos, htmlAttributes: new { @class = "form-control js-example-basic-single" })
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="col-md-12">
+                                <input type="number" id="Cantidad" placeholder="Cantidad" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input type="button" id="btnAgregar" value="Agregar" class="btn btn-info btn-block submit" />
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <em><b>Mantener apretada la tecla CTRL (Control) para seleccionar varios</b></em>
+                        @Html.DropDownList("Multi", (MultiSelectList)ViewBag.MultiProductos, htmlAttributes: new { size = 8, multiple = "multiple", @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <div class="col-md-12">
+                            <input type="button" id="btnQuitar" value="Quitar" class="btn btn-warning btn-block" />
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-12">
+                            <input type="button" id="btnLimpiar" value="Limpiar" class="btn btn-danger btn-block" />
+                        </div>
+                    </div>
+                </div>
+                <hr />
+
+                <div class="col-md-12">
+                    <div class="alert alert-info">
+                        <div class="alert-heading">
+                            <p><b>Precio de Costo, Venta Minorista y Venta Mayorista</b></p>
+                        </div>
+                        <br />
+                        <p><b>Se muestran precios estimativos, sumando los precios de cada producto que componen el combo</b></p>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-8">
+                        @Html.LabelFor(model => model.PrecioCosto, "Precio de Costo", htmlAttributes: new { @class = "control-label col-md-12" })
+                        <div class="col-md-12">
+                            @Html.EditorFor(model => model.PrecioCosto, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.PrecioCosto, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <br />
+                        <label id="lblCosto" class="control-label col-md-2"></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Codigo, "Código", htmlAttributes: new { @class = "control -label col-md-2" })
+                    <div class="col-md-12">
+                        @Html.EditorFor(model => model.Codigo, new { htmlAttributes = new { @class = "form-control" } })
+                        @*<div class="input-group">
+
+                                <div class="input-group-append">
+                                    <input type="button" id="btnGenerarCodigo" value="Auto-Generar Código" class="btn-sm btn-primary" />
+                                </div>
+                            </div>*@
+                        @Html.ValidationMessageFor(model => model.Codigo, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Editar Combo" class="btn btn-outline-success submit" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts{
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+
+            $('.js-example-basic-single').select2();
+
+            $('#btnAgregar').on('click', function () {
+                var producto = $("#Productos :selected");
+                var cantidad = $("#Cantidad").val();
+                for (var i = 0; i < cantidad; i++) {
+                    var nums = document.getElementById("Multi");
+                    var numOption = new Option(producto.text(), producto.val());
+                    nums.appendChild(numOption)
+                }
+                calcularPrecios();
+            });
+
+            $('#btnQuitar').on('click', function () {
+                $('#Multi option').each(function () {
+                    if ($(this)[0].selected) {
+                        $(this)[0].remove();
+                    }
+                });
+                calcularPrecios();
+            });
+
+            $('#btnLimpiar').on('click', function () {
+                $('#Multi option').each(function () {
+                    $(this)[0].remove();
+                });
+                calcularPrecios();
+            });
+
+          
+            $(this).submit(function (e) {
+                $("#Multi option").prop("selected", "selected");
+                calcularPrecios();
+            });
+
+            function calcularPrecios() {
+                if ($('#Multi option').length > 0) {
+                    var count = $('#Multi option').length;
+                    var element = $('#Multi')[0];
+                    let array = [];
+                    for (var i = 0; i < count; i++) {
+                        var id = element[0].value;
+                        array.push(id);
+                    }
+
+                    var data = JSON.stringify({
+                        'valores': array
+                    });
+
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("GetPrecios", "Combos")',
+                        data: data,
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: successFunc,
+                        error: errorFunc
+                    });
+
+                    function successFunc(data, status) {
+                        console.log(data);
+                        $('#PrecioCosto').val(data.Costo);
+                        $('#PrecioVentaMayorista').val(data.VentaMayorista)
+                        $('#PrecioVentaMinorista').val(data.VentaMinorista)
+                    }
+
+                    function errorFunc() {
+                        console.log('error');
+                    }
+                } else {
+                    $('#PrecioCosto').val('');
+                    $('#PrecioVentaMayorista').val('')
+                    $('#PrecioVentaMinorista').val('')
+                }
+            }
+
+        });
+    </script>
+
+}

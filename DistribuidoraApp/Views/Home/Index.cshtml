@@ -1,0 +1,548 @@
+﻿@using DistribuidoraAPI.Extensions;
+@{
+    ViewBag.Title = "Inicio";
+    Negocio.entidades.Arqueo oArqueo = ViewBag.oArqueo;
+}
+
+
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    @if (User.Identity.GetPerfilId() == "2")
+    {
+        <h1 class="h3 mb-0 text-gray-800">Línea de Cajas</h1>
+    }
+    else if (User.Identity.GetPerfilId() == "3")
+    {
+        <h1 class="h3 mb-0 text-gray-800">Pre-Venta</h1>
+    }
+    else
+    {
+        <h1 class="h3 mb-0 text-gray-800">Administración</h1>
+    }
+</div>
+<div class="row">
+
+    @if (User.Identity.GetPerfilId() == "1" || User.Identity.GetPerfilId() == "4")//Administracion
+    {
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="~/Productos" class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Productos</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><label id="lblProductos"></label></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-shopping-basket fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="~/Combos" class="card border-left-dark shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">Combos</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><label id="lblCombos"></label></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-atom fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="~/Productos/AltaStockMasiva" class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Stock</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><label id="lblStock"></label></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-sort-amount-down fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="~/Precios/PrecioMasivo" class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Precios</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><label id="lblPrecios"></label></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-atom fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        @Html.Partial("_Ventas")
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="~/Facturas" class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Facturas</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><label id="lblFacturas"></label></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-file-invoice fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="~/Clientes" class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Clientes</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><label id="lblClientes"></label></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-street-view fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="~/Arqueos" class="card border-left-secondary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">Arqueos</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><label id="lblArqueos"></label></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-money-bill-alt fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="~/Remitos" class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Remitos</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><label id="lblRemitos"></label></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-file-pdf fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="~/NotaCreditos" class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Notas Crédito</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><label id="lblNotasCredito"></label></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-file-import fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="~/Marcas" class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Marcas</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><label id="lblMarcas"></label></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-barcode fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="~/TipoProductos" class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Rubros</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><label id="lblTipoProductos"></label></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-cubes fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="~/Transportistas" class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Transportistas</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><label id="lblTransportistas"></label></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-truck fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="~/Proveedores" class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Proveedores</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><label id="lblProveedores"></label></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-cart-arrow-down fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="~/AspNetUsers" class="card border-left-dark shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">Usuarios</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><label id="lblUsuarios"></label></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users-cog fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        if (User.Identity.GetPerfilId() == "4")//desarrollo
+        {
+            <div class="col-xl-3 col-md-6 mb-4">
+                <a href="~/Listas" class="card border-left-dark shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">Listas</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800"><label id="lblListas"></label></div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-users-cog fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    }
+    else if (User.Identity.GetPerfilId() == "2")
+    {
+        //Preguntar si el arqueo esta iniciado
+        <div class="col-md-12">
+            <div class="card text-center">
+                <div class="card-header">
+                    Panel de Ventas
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div id="buttonLoading" hidden>
+                                <div id="loader"></div>
+                            </div>
+                            <div id="panelButtons" class="col-md-12">
+                                @if (!ViewBag.Abierto)
+                                {
+                                    <a href="#" onclick="iniciarArqueo()" class="card border-bottom-success shadow h-100 py-2">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Iniciar Arqueo</div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-play fa-2x text-success"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="#" onclick="finalizarArqueo()" class="card border-left-danger shadow h-100 py-2">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Finalizar Arqueo</div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-stop fa-2x text-danger"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <hr />
+                                    <a id="btnCobrar" href="@(Url.Action("Create", "Ventas", new { ArqueoId = oArqueo.ArqueoId }))" class="btn btn-outline-success btn-block">Realizar Nueva Venta</a>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            @if (oArqueo != null)
+                            {
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row no-gutters align-items-center">
+                                                    <p>Fecha Inicio: <label class="font-weight-bold">@oArqueo.FechaInicio.ToShortDateString()</label></p>
+                                                </div>
+                                                <div class="row no-gutters align-items-center">
+                                                    <p>Hora Inicio: <label class="font-weight-bold">@oArqueo.HoraInicio</label></p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row no-gutters align-items-center">
+                                                    <p>Cantidad Ventas: <label class="font-weight-bold">@ViewBag.CantVentas</label></p>
+                                                </div>
+                                                <div class="row no-gutters align-items-center">
+                                                    @if (ViewBag.Dinero != null)
+                                                    {
+                                                        <p>Dinero Ingresado: <label class="font-weight-bold">$@ViewBag.Dinero</label></p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>Dinero Ingresado: <label class="font-weight-bold">@ViewBag.Dinero</label></p>
+                                                    }
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="card-footer text-muted">
+                    @if (ViewBag.Abierto == true)
+                    {
+                        <label class="text-success">Arqueo Abierto</label>
+                    }
+                    else
+                    {
+                        <label class="text-danger">Arqueo Cerrado</label>
+                    }
+
+                </div>
+            </div>
+        </div>
+    }
+    else if (User.Identity.GetPerfilId() == "3")//preventista
+    {
+        <div class="col-md-12">
+            <div class="card text-center">
+                <div class="card-header">
+                    Panel de Pedidos
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div id="buttonLoading" hidden>
+                                <div id="loader"></div>
+                            </div>
+                            <div id="panelButtons" class="col-md-12">
+                                @if (!ViewBag.Abierto)
+                                {
+                                    <a href="@Url.Action("IniciarArqueo", "Arqueos")" class="card border-bottom-success shadow h-100 py-2">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Iniciar Pedidos</div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-play fa-2x text-success"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("FinalizarArqueo", "Arqueos")" class="card border-left-danger shadow h-100 py-2">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Finalizar Pedidos</div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-stop fa-2x text-danger"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <hr />
+                                    <a id="btnCobrar" href="@(Url.Action("Create", "Ventas", new { ArqueoId = oArqueo.ArqueoId }))" class="btn btn-outline-success btn-block">Nuevo Pedido</a>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            @if (oArqueo != null)
+                            {
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row no-gutters align-items-center">
+                                                    <p>Fecha Inicio: <label class="font-weight-bold">@oArqueo.FechaInicio.ToShortDateString()</label></p>
+                                                </div>
+                                                <div class="row no-gutters align-items-center">
+                                                    <p>Hora Inicio: <label class="font-weight-bold">@oArqueo.HoraInicio</label></p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row no-gutters align-items-center">
+                                                    <p>Cantidad Pedidos: <label class="font-weight-bold">@ViewBag.CantVentas</label></p>
+                                                </div>
+                                                <div class="row no-gutters align-items-center">
+                                                    @if (ViewBag.Dinero != null)
+                                                    {
+                                                        <p>Dinero Ingresado: <label class="font-weight-bold">$@ViewBag.Dinero</label></p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>Dinero Ingresado: <label class="font-weight-bold">@ViewBag.Dinero</label></p>
+                                                    }
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="card-footer text-muted">
+                    @if (ViewBag.Abierto == true)
+                    {
+                        <label class="text-success">Arqueo Abierto</label>
+                    }
+                    else
+                    {
+                        <label class="text-danger">Arqueo Cerrado</label>
+                    }
+
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+@section scripts {
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var abierto = @(ViewBag.Abierto.ToString().ToLower());
+            if (abierto == true) {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Arqueo Abierto',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+
+
+        })
+
+        function isNumeric(str) {
+            if (typeof str != "string") return false // we only process strings!
+            return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+                !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+        }
+
+        function iniciarArqueo() {
+            Swal.fire({
+                title: 'Ingresar la Cantidad de Dinero Inicial en Pesos' ,
+                input: 'text',
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                showLoaderOnConfirm: true,
+
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if (!isNumeric(result.value)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Debe ingresar una cantidad válida!',
+                            text: errorThrown
+                        });
+                    } else {
+                        var url = "@Url.Action("IniciarArqueo", "Arqueos")";
+                        window.location.href = url + "?dinero=" + result.value;
+                    }
+                }
+            });
+        }
+
+        function finalizarArqueo() {
+            Swal.fire({
+                title: 'Ingresar la Cantidad de Dinero Final en Pesos',
+                input: 'text',
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                showLoaderOnConfirm: true,
+
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if (!isNumeric(result.value)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Debe ingresar una cantidad válida!',
+                            text: errorThrown
+                        });
+                    } else {
+                        var url = "@Url.Action("FinalizarArqueo", "Arqueos")";
+                        window.location.href = url + "?dinero=" + result.value;
+                    }
+                }
+            });
+        }
+
+
+    </script>
+
+}
